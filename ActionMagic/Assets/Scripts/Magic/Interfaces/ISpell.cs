@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace MagicEnv
-{
-    public interface Spell
+{    
+    public interface ISpell
     {
         public float ManaCost {get;}
+
+        public string Name { get; }
        
         public MagicType Type { get; }
 
         public void Cast();
+        
     }
 }
