@@ -9,11 +9,19 @@ namespace MagicEnv {
         [SerializeField]
         private MagicBook _magicBook;
 
+        [SerializeField]
+        private CurrentSpell _spellController;
+
         private Magic _currentMagic;
         public Magic MagicInUse => _currentMagic;
 
         public void SetCurrentMagic(int newMagic)
         {
+            if (_currentMagic != null && _currentMagic.Type != (MagicType)newMagic && _spellController.SpellInUse != null)
+            {
+                _spellController.SpellInUse.Cancel();
+            }
+
             switch ((MagicType)newMagic)
             {
                 case MagicType.Electro:

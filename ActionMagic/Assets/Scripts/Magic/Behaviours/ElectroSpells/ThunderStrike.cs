@@ -24,12 +24,11 @@ namespace MagicEnv
         private float _defaultSkillDistance;
 
         [SerializeField]
-        private float _maxSkillDistance;
-
-        [SerializeField]
-        private float _heightOfAttack;
+        private float _maxSkillDistance;       
 
         private float _skillDistance;
+
+        private Vector3 _currentPosOfAttack;
 
         private bool _isActive;
 
@@ -37,7 +36,17 @@ namespace MagicEnv
         {
             if (_isActive)
             {
-                Debug.Log(_skillDistance);
+                Vector3 mousePosition = Input.mousePosition;
+                mousePosition.z = _skillDistance;
+                _currentPosOfAttack = Camera.main.ScreenToWorldPoint(mousePosition);
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_isActive)
+            {
+                Gizmos.DrawWireSphere(_currentPosOfAttack, 0.5f);
             }
         }
 
@@ -49,6 +58,13 @@ namespace MagicEnv
 
             _scroller.SetActive(true);
             _scroller.ScrollingEvent.AddListener(ChangeDistance);
+        }
+
+        public void Cancel()
+        {
+            _isActive = false;
+            _scroller.SetActive(false);
+            _scroller.ScrollingEvent.RemoveListener(ChangeDistance);
         }
 
         private void ChangeDistance(Vector2 _scrollCircle)

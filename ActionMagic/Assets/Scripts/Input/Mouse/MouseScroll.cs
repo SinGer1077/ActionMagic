@@ -22,12 +22,8 @@ namespace InputEnv
         {
             if (_isActive)
             {
-                //Debug.Log(Input.mouseScrollDelta.ToString() + " " + _pastDelta.ToString());
-                //if (Input.mouseScrollDelta != _pastDelta)
-                //{
-                    _scrolling.Invoke(Input.mouseScrollDelta);
-                    _pastDelta = Input.mouseScrollDelta;
-                //}
+                _scrolling.Invoke(Input.mouseScrollDelta);
+                _pastDelta = Input.mouseScrollDelta;
             }
         }
 

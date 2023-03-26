@@ -11,6 +11,10 @@ namespace MagicEnv
         public MagicType Type { get; }
 
         public void Cast();
+
+        public void Cancel();
+
+
         
     }
 }
