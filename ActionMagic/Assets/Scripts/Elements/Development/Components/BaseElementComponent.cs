@@ -1,7 +1,9 @@
 using UnityEngine;
 using Unity.Entities;
 
-namespace Elements
+using Elements.Data;
+
+namespace Elements.Components
 {
     public struct BaseElementComponent : IComponentData
     {

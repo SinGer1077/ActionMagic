@@ -4,8 +4,10 @@ using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
 
+using Elements.Data;
+using Elements.Components;
 
-namespace Elements
+namespace Elements.Authoring
 {
 
     public class ElementsSpawnerAuthoring : MonoBehaviour

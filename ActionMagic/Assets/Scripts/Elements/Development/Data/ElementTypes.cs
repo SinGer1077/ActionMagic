@@ -1,4 +1,4 @@
-namespace Elements
+namespace Elements.Data
 {
     public enum ElementTypes
     {

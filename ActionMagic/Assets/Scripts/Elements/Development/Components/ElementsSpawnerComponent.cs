@@ -5,7 +5,9 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Burst;
 
-namespace Elements
+using Elements.Data;
+
+namespace Elements.Components
 {
     public struct ElementsSpawnerComponent : IComponentData
     {

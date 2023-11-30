@@ -3,7 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Elements
+using Elements.Components;
+
+namespace Elements.Systems
 {
     partial struct ElementsSpawnerSystem : ISystem
     {

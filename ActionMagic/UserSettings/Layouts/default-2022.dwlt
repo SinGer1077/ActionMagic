@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 48
+  controlID: 281
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -68,8 +68,8 @@ MonoBehaviour:
     y: 0
     width: 534
     height: 827.3333
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 49
+  controlID: 39
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -271,8 +271,8 @@ MonoBehaviour:
     y: 0
     width: 886.6666
     height: 491.33334
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -315,7 +315,7 @@ MonoBehaviour:
     m_SaveData: []
     m_OverlaysVisible: 1
   m_Spl:
-    ID: 787
+    ID: 1097
     splitterInitialOffset: 0
     currentActiveSplitter: -1
     realSizes:
@@ -338,7 +338,7 @@ MonoBehaviour:
     oldMinSizes: 
     oldMaxSizes: 
     oldSplitSize: 0
-  m_TestTypeToolbarIndex: 1
+  m_TestTypeToolbarIndex: 0
   m_PlayModeTestListGUI:
     m_Window: {fileID: 12}
     m_NewResultList:
@@ -358,6 +358,72 @@ MonoBehaviour:
       categories: []
       parentId: 
       parentUniqueId: 
+    - id: 1004
+      uniqueId: '[PlayTests][F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/PlayTests.dll][suite]'
+      name: PlayTests.dll
+      fullName: F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/PlayTests.dll
+      resultStatus: 0
+      duration: 0
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1000
+      parentUniqueId: '[ActionMagic][suite]'
+    - id: 1001
+      uniqueId: PlayTests.dll/[PlayTests][ElementsTest][suite]
+      name: ElementsTest
+      fullName: ElementsTest
+      resultStatus: 0
+      duration: 0
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1004
+      parentUniqueId: '[PlayTests][F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/PlayTests.dll][suite]'
+    - id: 1002
+      uniqueId: PlayTests.dll/ElementsTest/[PlayTests][ElementsTest.ElementsTestSimplePasses]
+      name: ElementsTestSimplePasses
+      fullName: ElementsTest.ElementsTestSimplePasses
+      resultStatus: 0
+      duration: 0
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1001
+      parentUniqueId: PlayTests.dll/[PlayTests][ElementsTest][suite]
+    - id: 1003
+      uniqueId: PlayTests.dll/ElementsTest/[PlayTests][ElementsTest.ElementsTestWithEnumeratorPasses]
+      name: ElementsTestWithEnumeratorPasses
+      fullName: ElementsTest.ElementsTestWithEnumeratorPasses
+      resultStatus: 0
+      duration: 0
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1001
+      parentUniqueId: PlayTests.dll/[PlayTests][ElementsTest][suite]
     m_ResultText: 
     m_ResultStacktrace: 
     m_TestListState:
@@ -398,8 +464,8 @@ MonoBehaviour:
       uniqueId: '[ActionMagic][suite]'
       name: ActionMagic
       fullName: ActionMagic
-      resultStatus: 0
-      duration: 0
+      resultStatus: 1
+      duration: 0.0966512
       messages: 
       output: 
       stacktrace: 
@@ -414,8 +480,8 @@ MonoBehaviour:
       uniqueId: '[Tests][F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/Tests.dll][suite]'
       name: Tests.dll
       fullName: F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/Tests.dll
-      resultStatus: 0
-      duration: 0
+      resultStatus: 1
+      duration: 0.0520737
       messages: 
       output: 
       stacktrace: 
@@ -427,11 +493,11 @@ MonoBehaviour:
       parentId: 1000
       parentUniqueId: '[ActionMagic][suite]'
     - id: 1001
-      uniqueId: Tests.dll/[Tests][ElementsTest][suite]
-      name: ElementsTest
-      fullName: ElementsTest
-      resultStatus: 0
-      duration: 0
+      uniqueId: Tests.dll/[Tests][TestTest][suite]
+      name: TestTest
+      fullName: TestTest
+      resultStatus: 1
+      duration: 0.0462841
       messages: 
       output: 
       stacktrace: 
@@ -443,11 +509,11 @@ MonoBehaviour:
       parentId: 1004
       parentUniqueId: '[Tests][F:/Programming/Unity/ActionMagic/ActionMagic/Library/ScriptAssemblies/Tests.dll][suite]'
     - id: 1002
-      uniqueId: Tests.dll/ElementsTest/[Tests][ElementsTest.ElementsTestSimplePasses]
-      name: ElementsTestSimplePasses
-      fullName: ElementsTest.ElementsTestSimplePasses
-      resultStatus: 0
-      duration: 0
+      uniqueId: Tests.dll/TestTest/[Tests][TestTest.TestTestSimplePasses]
+      name: TestTestSimplePasses
+      fullName: TestTest.TestTestSimplePasses
+      resultStatus: 1
+      duration: 0.0213677
       messages: 
       output: 
       stacktrace: 
@@ -458,11 +524,11 @@ MonoBehaviour:
       categories:
       - Uncategorized
       parentId: 1001
-      parentUniqueId: Tests.dll/[Tests][ElementsTest][suite]
+      parentUniqueId: Tests.dll/[Tests][TestTest][suite]
     - id: 1003
-      uniqueId: Tests.dll/ElementsTest/[Tests][ElementsTest.ElementsTestWithEnumeratorPasses]
-      name: ElementsTestWithEnumeratorPasses
-      fullName: ElementsTest.ElementsTestWithEnumeratorPasses
+      uniqueId: Tests.dll/TestTest/[Tests][TestTest.TestTestWithEnumeratorPasses]
+      name: TestTestWithEnumeratorPasses
+      fullName: TestTest.TestTestWithEnumeratorPasses
       resultStatus: 0
       duration: 0
       messages: 
@@ -475,14 +541,14 @@ MonoBehaviour:
       categories:
       - Uncategorized
       parentId: 1001
-      parentUniqueId: Tests.dll/[Tests][ElementsTest][suite]
-    m_ResultText: 
+      parentUniqueId: Tests.dll/[Tests][TestTest][suite]
+    m_ResultText: TestTestSimplePasses (0,021s)
     m_ResultStacktrace: 
     m_TestListState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: a92ea4d2
-      m_LastClickedID: -760992087
-      m_ExpandedIDs: a92ea4d25fdea13ee5236f67ffffff7f
+      m_SelectedIDs: e1c3a8bf
+      m_LastClickedID: -1079458847
+      m_ExpandedIDs: a92ea4d25fdea13ee5236f6701be2170ffffff7f
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -657,7 +723,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Packages/com.unity.ugui
+    - Assets/Scripts/Elements/Development/PlayTests
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -665,16 +731,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Packages/com.unity.ugui
+  - Assets/Scripts/Elements/Development/PlayTests
   m_LastFoldersGridSize: -1
   m_LastProjectPath: F:\Programming\Unity\ActionMagic\ActionMagic
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 13.0000305}
-    m_SelectedIDs: 28830000
-    m_LastClickedID: 33576
-    m_ExpandedIDs: 00000000da7f0000dc7f0000de7f0000e07f0000e27f0000e47f0000e67f0000e87f0000ea7f0000ec7f0000f07f000000ca9a3b
+    scrollPos: {x: 0, y: 45.00003}
+    m_SelectedIDs: 0e830000
+    m_LastClickedID: 33550
+    m_ExpandedIDs: 00000000da7f0000dc7f0000de7f0000e07f0000e27f0000e47f0000e67f0000e87f0000ea7f0000ec7f0000ee7f0000f07f000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -702,7 +768,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000da7f0000dc7f0000de7f0000e07f0000e27f0000e47f0000e67f0000e87f0000ea7f0000ec7f0000ee7f0000f07f0000f27f0000
+    m_ExpandedIDs: 00000000da7f0000dc7f0000de7f0000e07f0000e27f0000e47f0000e67f0000e87f0000ea7f0000ec7f0000ee7f0000f07f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -799,7 +865,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 519.3333
+  m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
@@ -842,7 +908,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 28830000
+      m_SelectedIDs: 1a830000
       m_LastClickedID: 0
       m_ExpandedIDs: 
       m_RenameOverlay:
