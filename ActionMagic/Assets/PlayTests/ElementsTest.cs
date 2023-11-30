@@ -4,31 +4,35 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Unity.Entities;
+using Elements.Components;
+using Elements.Systems;
 
 [TestFixture]
 [Category("Unity ECS Elements Tests")]
-public class ElementsTest
+public class ElementsTest : ECSTestBase
 {
-    [Test]
-    public void When_CreateElements_Than_CountEqualTwo()
+    [UnityTest]
+    public IEnumerator EcsBasic()
     {
-        
+        AddSystemToWorld<ElementsSpawnerSystem>();
+        var entity = MakeEntity();
+        this.EntityManager.AddComponentData(entity, new ElementsSpawnerComponent());
+        World.Update();
+        Debug.LogWarning("finish setup");
+
+        while (true)
+        {
+            Debug.LogWarning("loop");
+            World.Update();
+            yield return null;
+        }
     }
 
-    //// A Test behaves as an ordinary method
     //[Test]
-    //public void ElementsTestSimplePasses()
+    //public void When_CreateElements_Than_CountEqualTwo()
     //{
-       
+    //    var entity =
     //}
 
-    //// A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    //// `yield return null;` to skip a frame.
-    //[UnityTest]
-    //public IEnumerator ElementsTestWithEnumeratorPasses()
-    //{
-    //    // Use the Assert class to test conditions.
-    //    // Use yield to skip a frame.
-    //    yield return null;
-    //}
+
 }

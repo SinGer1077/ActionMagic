@@ -7,7 +7,7 @@ using Elements.Components;
 
 namespace Elements.Systems
 {
-    partial struct ElementsSpawnerSystem : ISystem
+    public partial struct ElementsSpawnerSystem : ISystem
     {
         [BurstCompile]
         public void OnCreate(ref SystemState state)
