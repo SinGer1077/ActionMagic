@@ -11,7 +11,8 @@
         "Unity.Mathematics",
         "ElementsComponents",
         "ElementsSystems",
-        "ElementsData"
+        "ElementsData",
+        "Unity.Entities.Editor.Tests"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

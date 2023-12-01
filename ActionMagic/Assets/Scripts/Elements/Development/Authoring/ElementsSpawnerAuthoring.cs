@@ -13,17 +13,17 @@ namespace Elements.Authoring
     public class ElementsSpawnerAuthoring : MonoBehaviour
     {
         [SerializeField]
-        private ElementTypes[] elements;
+        //private ElementTypes[] elements;
+        private int Count;
 
         class Baker : Baker<ElementsSpawnerAuthoring>
-        {
+        {            
             public override void Bake(ElementsSpawnerAuthoring authoring)
-            {
-                NativeArray<ElementTypes> array = new NativeArray<ElementTypes>(authoring.elements, Allocator.Temp);                
-                var entity = GetEntity(TransformUsageFlags.Dynamic);
+            {               
+                var entity = GetEntity(TransformUsageFlags.None);
                 AddComponent(entity, new ElementsSpawnerComponent
                 {
-                    elements = array
+                    Count = authoring.Count
                 });
             }
         }

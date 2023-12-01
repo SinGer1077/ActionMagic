@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Entities;
-
 using Elements.Data;
 
 namespace Elements.Components

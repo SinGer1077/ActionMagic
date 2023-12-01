@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
@@ -11,6 +12,8 @@ namespace Elements.Components
 {
     public struct ElementsSpawnerComponent : IComponentData
     {
-        public NativeArray<ElementTypes> elements;        
+        //public NativeArray<ElementTypes> elements;        
+        //public fixed int elements[2];
+        public int Count;
     }
 }
