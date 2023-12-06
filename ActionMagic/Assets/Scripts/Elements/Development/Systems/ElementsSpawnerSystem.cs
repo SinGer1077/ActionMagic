@@ -25,7 +25,7 @@ namespace Elements.Systems
             state.Enabled = false;
 
             //var spawner = SystemAPI.GetSingleton<ElementsSpawnerComponent>();
-
+            Debug.Log("Я тут нахрен");
             foreach (var spawner in SystemAPI.Query<ElementsSpawnerComponent>())
             {
                 for (int i = 0; i < spawner.Count; i++)
