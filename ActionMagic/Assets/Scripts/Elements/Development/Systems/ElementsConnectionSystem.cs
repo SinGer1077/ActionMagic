@@ -5,6 +5,7 @@ using UnityEngine;
 
 using Elements.Components;
 using Elements.Data;
+using Universal.Components;
 
 namespace Elements.Systems
 {
@@ -34,6 +35,15 @@ namespace Elements.Systems
 
             connectionsFirst.Add(new ElementConnection(secondElement));
             connectionsSecond.Add(new ElementConnection(firstElement));
+
+            float mass1 = manager.GetComponentData<WeightComponent>(first).WeightValue;
+            float mass2 = manager.GetComponentData<WeightComponent>(second).WeightValue;            
+            
+            float resultMass1 = Mathf.Clamp(mass1 - mass2 * ElementProrityTable.ElementPriorities[(int)secondElement.Type, (int)firstElement.Type], 0, Mathf.Infinity);
+            float resultMass2 = Mathf.Clamp(mass2 - mass1 * ElementProrityTable.ElementPriorities[(int)firstElement.Type, (int)secondElement.Type], 0, Mathf.Infinity); 
+
+            manager.SetComponentData(first, new WeightComponent(){WeightValue = resultMass1 });
+            manager.SetComponentData(second, new WeightComponent() { WeightValue = resultMass2 });
         }
     }
 }

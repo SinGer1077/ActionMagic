@@ -4,6 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "Unity.Entities.Editor.Tests",
         "Unity.Entities",
         "Unity.Entities.Tests",
         "Unity.Collections",
@@ -12,7 +13,7 @@
         "ElementsComponents",
         "ElementsSystems",
         "ElementsData",
-        "Unity.Entities.Editor.Tests"
+        "UniversalComponents"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

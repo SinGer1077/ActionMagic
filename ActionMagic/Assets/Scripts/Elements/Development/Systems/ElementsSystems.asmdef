@@ -6,7 +6,8 @@
         "Unity.Collections",
         "Unity.Burst",
         "ElementsComponents",
-        "ElementsData"
+        "ElementsData",
+        "UniversalComponents"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

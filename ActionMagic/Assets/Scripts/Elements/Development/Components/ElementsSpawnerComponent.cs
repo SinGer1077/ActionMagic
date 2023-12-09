@@ -12,8 +12,6 @@ namespace Elements.Components
 {
     public struct ElementsSpawnerComponent : IComponentData
     {
-        //public NativeArray<ElementTypes> elements;        
-        //public fixed int elements[2];
         public int Count;
     }
 }

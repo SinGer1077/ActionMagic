@@ -10,6 +10,7 @@ using Unity.Entities.Tests;
 using Elements.Components;
 using Elements.Systems;
 using Elements.Data;
+using Universal.Components;
 
 [TestFixture]
 [Category("Unity ECS Elements Tests")]
@@ -58,8 +59,8 @@ public class ElementsTest : ECSTestsFixture
     [Test]
     public void When_ElementsEntitiesCollide_Than_ElementsConnectEachOther()
     {
-        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire);
-        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water);
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 10);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10);
 
         BaseElementComponent firstElement = m_Manager.GetComponentData<BaseElementComponent> (first);
         BaseElementComponent secondElement = m_Manager.GetComponentData<BaseElementComponent>(second);
@@ -79,30 +80,80 @@ public class ElementsTest : ECSTestsFixture
     [Test]
     public void When_Elements—onnectEachOther_And_TheyHasConnection_Than_TheirSizeValueChanges()
     {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 10);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10);
+        var firstWeightBefore = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightBefore = m_Manager.GetComponentData<WeightComponent>(second);    
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);
+
+        Assert.AreNotEqual(firstWeightBefore.WeightValue, firstWeightAfter.WeightValue);
+        Assert.AreNotEqual(secondWeightBefore.WeightValue, secondWeightAfter.WeightValue);
     }
 
     [Test]
     public void When_WaterElementConnectFireElement_And_SizesIs_10_And_10_Than_SizesWillBe_5_And_0()
     {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 10.0f);     
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);
+        float expected1 = 5.0f;
+        float expected2 = 0.0f;
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+        Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
 
     [Test]
     public void When_WaterElementConnectFireElement_And_SizesIs_10_And_20_Than_SizesWillBe_0_And_0()
     {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 20.0f);
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);
+        float expected1 = 0.0f;
+        float expected2 = 0.0f;
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+        Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
 
     [Test]
     public void When_WaterElementConnectFireElement_And_SizesIs_10_And_30_Than_SizesWillBe_0_And_10()
     {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 30.0f);
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);
+        float expected1 = 0.0f;
+        float expected2 = 10.0f;
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+        Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
 
     [Test]
     public void When_WaterElementConnectFireElement_And_SizesIs_10_And_5_Than_SizesWillBe_7_5_And_0()
     {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 5.0f);
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);
+        float expected1 = 7.5f;
+        float expected2 = 0.0f;
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+        Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
 }

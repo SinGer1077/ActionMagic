@@ -5,6 +5,7 @@ using UnityEngine;
 
 using Elements.Components;
 using Elements.Data;
+using Universal.Components;
 
 namespace Elements.Systems
 {
@@ -28,7 +29,7 @@ namespace Elements.Systems
             {
                 for (int i = 0; i < spawner.Count; i++)
                 {
-                    var entity = CreateElementEntity(state.EntityManager, (ElementTypes)Random.Range(0, 2));
+                    var entity = CreateElementEntity(state.EntityManager, (ElementTypes)Random.Range(0, 2), 10.0f);
                     //var entity = state.EntityManager.CreateEntity();
                     //_ecb.AddComponent(entity, new BaseElementComponent { Type = (ElementTypes)Random.Range(0, 2) });                  
                 }
@@ -38,10 +39,11 @@ namespace Elements.Systems
         }
 
         [BurstCompile]
-        public static Entity CreateElementEntity(EntityManager manager, ElementTypes type)
+        public static Entity CreateElementEntity(EntityManager manager, ElementTypes type, float weight)
         {           
-            var entity = manager.CreateEntity(typeof(BaseElementComponent), typeof(ElementConnection));
+            var entity = manager.CreateEntity(typeof(BaseElementComponent), typeof(ElementConnection), typeof(WeightComponent));
             manager.SetComponentData(entity, new BaseElementComponent { id = entity.Index, Type = type });
+            manager.SetComponentData(entity, new WeightComponent { WeightValue = weight });
             return entity;
         }
     }
