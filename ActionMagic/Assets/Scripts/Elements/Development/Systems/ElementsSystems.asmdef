@@ -5,6 +5,7 @@
         "Unity.Entities",
         "Unity.Collections",
         "Unity.Burst",
+        "Unity.Physics",
         "ElementsComponents",
         "ElementsData",
         "UniversalComponents"

@@ -9,6 +9,7 @@
         "Unity.Entities.Tests",
         "Unity.Collections",
         "Unity.Transforms",
+        "Unity.Physics",
         "Unity.Mathematics",
         "ElementsComponents",
         "ElementsSystems",

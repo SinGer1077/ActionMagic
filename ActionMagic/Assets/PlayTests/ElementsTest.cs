@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Tests;
+using Unity.Mathematics;
+using Unity.Transforms;
+using Unity.Physics;
 
 using Elements.Components;
 using Elements.Systems;
@@ -156,4 +160,36 @@ public class ElementsTest : ECSTestsFixture
         Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
         Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
+
+    [UnityTest]
+    public IEnumerator When_OnSceneTwoElementWithPhysics_Than_AfterUpdateTheyConnectChanges()
+    {
+        World.GetOrCreateSystem<ElementsConnectionSystem>();
+        var entities = World.EntityManager.GetAllEntities(Allocator.Persistent);
+
+        foreach (var entity in entities)
+        {
+            if (m_Manager.HasComponent<WeightComponent>(entity))
+            {
+                Debug.Log(m_Manager.GetComponentData<WeightComponent>(entity).WeightValue + " " + entity.Index);
+                Debug.Log(m_Manager.GetBuffer<ElementConnection>(entity).Length);
+            }
+        }
+
+        while (true)
+        {
+            World.Update();
+            Debug.Log("Updating");
+            foreach (var entity in entities)
+            {
+                if (m_Manager.HasComponent<WeightComponent>(entity))
+                {
+                    Debug.Log(m_Manager.GetComponentData<WeightComponent>(entity).WeightValue + " " + entity.Index);
+                    Debug.Log(m_Manager.GetBuffer<ElementConnection>(entity).Length);
+                }
+            }
+            yield return null;
+        }
+    }
+    
 }

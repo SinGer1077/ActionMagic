@@ -13,7 +13,6 @@ namespace Elements.Authoring
     public class ElementsSpawnerAuthoring : MonoBehaviour
     {
         [SerializeField]
-        //private ElementTypes[] elements;
         private int Count;
 
         class Baker : Baker<ElementsSpawnerAuthoring>
