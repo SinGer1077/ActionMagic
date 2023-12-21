@@ -17,17 +17,17 @@ namespace Universal.Systems
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<ShouldBeDestroyedComponent>();
-            _ecb = new EntityCommandBuffer(Allocator.Persistent);
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
-        {                     
+        {           
+            _ecb = new EntityCommandBuffer(Allocator.TempJob);
+
             foreach (var (destroyComponent, timerComponent) in SystemAPI.Query<RefRW<ShouldBeDestroyedComponent>, RefRO<TimerComponent>>())
             {
                 if (destroyComponent.ValueRO.Should == true)
                 {
-                    Debug.Log(timerComponent.ValueRO.timer + " timer");
                     Debug.Log(destroyComponent.ValueRW.MainEntity.Index);
                     destroyComponent.ValueRW.timerToDestroy = timerComponent.ValueRO.timer;
                     if (destroyComponent.ValueRO.timerToDestroy <= 0)
@@ -36,6 +36,9 @@ namespace Universal.Systems
                     }
                 }
             }
+
+            _ecb.Playback(state.EntityManager);
+            _ecb.Dispose();
         }
     }
 }
