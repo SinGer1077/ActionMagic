@@ -26,6 +26,5 @@ namespace Elements.Authoring
                 });
             }
         }
-
     }
 }

@@ -6,32 +6,34 @@ using Elements.Components;
 using Elements.Data;
 using Universal.Components;
 
-
-public class ElementAuthoring : MonoBehaviour
+namespace Elements.Authoring
 {
-    [SerializeField]
-    private ElementTypes type;
-    [SerializeField]
-    private float Weight;
-
-    class Baker : Baker<ElementAuthoring>
+    public class ElementAuthoring : MonoBehaviour
     {
-        public override void Bake(ElementAuthoring authoring)
+        [SerializeField]
+        private ElementTypes type;
+        [SerializeField]
+        private float Weight;
+
+        class Baker : Baker<ElementAuthoring>
         {
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
-
-            AddComponent(entity, new BaseElementComponent
+            public override void Bake(ElementAuthoring authoring)
             {
-                id = entity.Index,
-                Type = authoring.type
-            });
+                var entity = GetEntity(TransformUsageFlags.Dynamic);
 
-            AddComponent(entity, new WeightComponent
-            {
-                WeightValue = authoring.Weight
-            });
+                AddComponent(entity, new BaseElementComponent
+                {
+                    id = entity.Index,
+                    Type = authoring.type
+                });
 
-            AddBuffer<ElementConnection>(entity);
+                AddComponent(entity, new WeightComponent
+                {
+                    WeightValue = authoring.Weight
+                });
+
+                AddBuffer<ElementConnection>(entity);
+            }
         }
     }
 }

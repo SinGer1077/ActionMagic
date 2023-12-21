@@ -161,35 +161,51 @@ public class ElementsTest : ECSTestsFixture
         Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
     }
 
-    [UnityTest]
-    public IEnumerator When_OnSceneTwoElementWithPhysics_Than_AfterUpdateTheyConnectChanges()
+    [Test]
+    public void When_ElementsSizeIs_0_Than_ElementShouldBeDeleted()
     {
-        World.GetOrCreateSystem<ElementsConnectionSystem>();
-        var entities = World.EntityManager.GetAllEntities(Allocator.Persistent);
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 30.0f);
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
-        foreach (var entity in entities)
-        {
-            if (m_Manager.HasComponent<WeightComponent>(entity))
-            {
-                Debug.Log(m_Manager.GetComponentData<WeightComponent>(entity).WeightValue + " " + entity.Index);
-                Debug.Log(m_Manager.GetBuffer<ElementConnection>(entity).Length);
-            }
-        }
-
-        while (true)
-        {
-            World.Update();
-            Debug.Log("Updating");
-            foreach (var entity in entities)
-            {
-                if (m_Manager.HasComponent<WeightComponent>(entity))
-                {
-                    Debug.Log(m_Manager.GetComponentData<WeightComponent>(entity).WeightValue + " " + entity.Index);
-                    Debug.Log(m_Manager.GetBuffer<ElementConnection>(entity).Length);
-                }
-            }
-            yield return null;
-        }
+        
     }
+
+    [Test]
+    public void When_WaterElementAndFireElementConnects_Than_VaporReactionShouldBeCreated()
+    {
+
+    }
+
+    //[UnityTest]
+    //public IEnumerator When_OnSceneTwoElementWithPhysics_Than_AfterUpdateTheyConnectChanges()
+    //{
+    //    var spawnerEntity = m_Manager.CreateEntity(typeof(PhysicsElementsSpawnerComponent));
+    //    PhysicsElementsSpawnerComponent spawnerComponent = m_Manager.GetComponentData<PhysicsElementsSpawnerComponent>(spawnerEntity);
+        
+
+    //    var typesBuffer = m_Manager.AddBuffer<ElementBuffer>(spawnerComponent.Spawner);
+    //    typesBuffer.Add(new ElementBuffer { type = ElementTypes.Water });
+    //    typesBuffer.Add(new ElementBuffer { type = ElementTypes.Fire });
+
+    //    var prefabsBuffer = m_Manager.AddBuffer<ElementPrefab>(spawnerComponent.Spawner);
+    //    prefabsBuffer.Add(new ElementPrefab { Prefab = (GameObject)Resources.Load("Assets / Prefabs / WaterElement.prefab")), type = ElementTypes.Water);
+
+    //    while (true)
+    //    {
+    //        World.Update();
+    //        var entities = m_Manager.GetAllEntities(Allocator.Persistent);
+    //        foreach (var entity in entities)
+    //        {
+    //            if (m_Manager.HasComponent<PhysicsElementsSpawnerComponent>(entity))
+    //            {
+    //                Debug.Log("Finded");
+    //            }
+    //        }
+    //        Debug.Log("Updating");
+            
+    //        yield return null;
+    //    }
+    //}
     
 }
