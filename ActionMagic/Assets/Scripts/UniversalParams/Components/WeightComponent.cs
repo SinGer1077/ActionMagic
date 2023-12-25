@@ -5,5 +5,6 @@ namespace Universal.Components
     public struct WeightComponent : IComponentData
     {
         public float WeightValue;
+        public bool Infinity;
     }
 }

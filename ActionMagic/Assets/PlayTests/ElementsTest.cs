@@ -181,7 +181,7 @@ public class ElementsTest : ECSTestsFixture
     }
 
     [Test]
-    public void When_ELementCollideWithDeadElement_Than_ItsWeightDoNotChange()
+    public void When_ElementCollideWithDeadElement_Than_ItsWeightDoNotChange()
     {
         var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
         var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);
@@ -203,28 +203,52 @@ public class ElementsTest : ECSTestsFixture
     }
 
     [Test]
-    public void When_ElementCollide_Than_WeightChanged()
+    public void When_ElementsWithInfinityWeightCollide_Than_TheirWeightDoNotChange()
     {
-        //var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
-        //var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 30.0f);
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);
 
-        //var collisionEventJob = new ElementsConnectionSystem.CollisionEventElementsJob 
-        //{
-        //    BaseElementData = m_Manager.Get GetComponentLookup<BaseElementComponent>(),
-        //    WeightComponentData = SystemAPI.GetComponentLookup<WeightComponent>(),
-        //    ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
-        //};
+        float expected1 = 1.0f;
+        float expected2 = 1.0f;
 
-        //collisionEventJob.ConnectElements(first, second);
 
-        //World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
-        //World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
+        m_Manager.SetComponentData(first, new WeightComponent { WeightValue = expected1, Infinity = true });
+        m_Manager.SetComponentData(second, new WeightComponent { WeightValue = expected2, Infinity = true });
 
-        //if (m_Manager.HasComponent<ShouldBeDestroyedComponent>(first))
-        //{
-        //    var shouldBe = m_Manager.GetComponentData<ShouldBeDestroyedComponent>(first);
-        //    Assert.AreEqual(true, shouldBe.Should);
-        //}
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
+
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);
+        var secondWeightAfter = m_Manager.GetComponentData<WeightComponent>(second);       
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+        Assert.AreEqual(secondWeightAfter.WeightValue, expected2);
+    }
+
+    [Test]
+    public void When_ElementWithInfinityWeightCollideWithNotInfinity_Than_NotInfinityElementDeadAndInfinityNotChange()
+    {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);
+
+        float expected1 = 1.0f;
+        float expected2 = 1.0f;
+
+        m_Manager.SetComponentData(first, new WeightComponent { WeightValue = expected1, Infinity = true });
+        m_Manager.SetComponentData(second, new WeightComponent { WeightValue = expected2, Infinity = false });
+
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
+
+        World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
+        World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
+
+        var firstWeightAfter = m_Manager.GetComponentData<WeightComponent>(first);        
+
+        Assert.AreEqual(firstWeightAfter.WeightValue, expected1);
+       
+        if (m_Manager.HasComponent<ShouldBeDestroyedComponent>(second))
+        {
+            Assert.IsTrue(m_Manager.GetComponentData<ShouldBeDestroyedComponent>(second).Should);
+        }
     }
 
     [Test]

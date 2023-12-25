@@ -1,3 +1,5 @@
+using System;
+
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -65,15 +67,27 @@ namespace Elements.Systems
             connectionsFirst.Add(new ElementConnection(secondElement));
             connectionsSecond.Add(new ElementConnection(firstElement));
 
-            float mass1 = manager.GetComponentData<WeightComponent>(first).WeightValue;
-            float mass2 = manager.GetComponentData<WeightComponent>(second).WeightValue;
+            var mass1 = manager.GetComponentData<WeightComponent>(first);
+            var mass2 = manager.GetComponentData<WeightComponent>(second);
 
-            float resultMass1 = Mathf.Clamp(mass1 - mass2 * ElementProrityTable.ElementPriorities[(int)secondElement.Type, (int)firstElement.Type], 0, Mathf.Infinity);
-            float resultMass2 = Mathf.Clamp(mass2 - mass1 * ElementProrityTable.ElementPriorities[(int)firstElement.Type, (int)secondElement.Type], 0, Mathf.Infinity);
+            float resultMass1 = ChangeWeight(mass1, mass2, firstElement.Type, secondElement.Type);
+            float resultMass2 = ChangeWeight(mass2, mass1, secondElement.Type, firstElement.Type);
 
             manager.SetComponentData(first, new WeightComponent() { WeightValue = resultMass1 });
             manager.SetComponentData(second, new WeightComponent() { WeightValue = resultMass2 });
         }             
+
+        [BurstCompile]
+        private static float ChangeWeight(WeightComponent firstWeight, WeightComponent secondWeight, ElementTypes firstType, ElementTypes secondType)
+        {
+            float resultMass1 = firstWeight.WeightValue;
+            if (firstWeight.Infinity == false)
+            {
+                resultMass1 = Mathf.Clamp(firstWeight.WeightValue - secondWeight.WeightValue
+                    * ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType], 0, Mathf.Infinity) * 1 - Convert.ToInt32(secondWeight.Infinity);
+            }
+            return resultMass1;
+        }        
 
         [BurstCompile]
         public struct CollisionEventElementsJob : ICollisionEventsJob
@@ -96,7 +110,6 @@ namespace Elements.Systems
 
                 if (isElementA && isElementB)
                 {
-                    //ConnectElements( _manager, entityA, entityB, BaseElementData[entityA], BaseElementData[entityB]);
                     var firstElement = BaseElementData.GetRefRO(entityA);
                     var secondElement = BaseElementData.GetRefRO(entityB);
 
@@ -114,11 +127,11 @@ namespace Elements.Systems
                     connectionsFirst.Add(new ElementConnection(secondElement.ValueRO));
                     connectionsSecond.Add(new ElementConnection(firstElement.ValueRO));
 
-                    float mass1 = WeightComponentData.GetRefRW(entityA).ValueRW.WeightValue;
-                    float mass2 = WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue;
+                    var mass1 = WeightComponentData.GetRefRW(entityA).ValueRW;
+                    var mass2 = WeightComponentData.GetRefRW(entityB).ValueRW;
 
-                    float resultMass1 = Mathf.Clamp(mass1 - mass2 * ElementProrityTable.ElementPriorities[(int)secondElement.ValueRO.Type, (int)firstElement.ValueRO.Type], 0, Mathf.Infinity);
-                    float resultMass2 = Mathf.Clamp(mass2 - mass1 * ElementProrityTable.ElementPriorities[(int)firstElement.ValueRO.Type, (int)secondElement.ValueRO.Type], 0, Mathf.Infinity);
+                    float resultMass1 = ChangeWeight(mass1, mass2, firstElement.ValueRO.Type, secondElement.ValueRO.Type);
+                    float resultMass2 = ChangeWeight(mass2, mass1, secondElement.ValueRO.Type, firstElement.ValueRO.Type);
 
                     WeightComponentData.GetRefRW(entityA).ValueRW.WeightValue = resultMass1;
                     WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue = resultMass2;

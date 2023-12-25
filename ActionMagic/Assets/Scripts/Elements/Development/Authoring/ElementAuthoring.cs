@@ -13,7 +13,9 @@ namespace Elements.Authoring
         [SerializeField]
         private ElementTypes type;
         [SerializeField]
-        private float Weight;
+        private float weight;
+        [SerializeField]
+        private bool infinity;
 
         class Baker : Baker<ElementAuthoring>
         {
@@ -29,7 +31,8 @@ namespace Elements.Authoring
 
                 AddComponent(entity, new WeightComponent
                 {
-                    WeightValue = authoring.Weight
+                    WeightValue = authoring.weight,
+                    Infinity = authoring.infinity
                 });
 
                 AddBuffer<ElementConnection>(entity);
