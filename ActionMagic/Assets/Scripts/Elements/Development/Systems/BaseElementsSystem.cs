@@ -38,7 +38,6 @@ namespace Elements.Systems
                     temp++;
                 }
             }
-            Debug.Log(temp + " count count");
         }
     }
 }

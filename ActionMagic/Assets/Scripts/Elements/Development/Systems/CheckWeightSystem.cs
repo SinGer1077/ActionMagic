@@ -27,7 +27,7 @@ namespace Elements.Systems
         public void OnUpdate(ref SystemState state)
         {
             var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
-            var job = new AddDestroyComponent
+            var job = new AddDestroyComponentJob
             {
                 ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged)
             };
@@ -37,7 +37,7 @@ namespace Elements.Systems
 
         [WithNone(typeof(ShouldBeDestroyedComponent))]
         [BurstCompile]
-        partial struct AddDestroyComponent : IJobEntity
+        public partial struct AddDestroyComponentJob : IJobEntity
         {          
             public EntityCommandBuffer ECB;
 

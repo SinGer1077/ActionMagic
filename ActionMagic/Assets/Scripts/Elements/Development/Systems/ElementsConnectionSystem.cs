@@ -64,7 +64,7 @@ namespace Elements.Systems
 
             connectionsFirst.Add(new ElementConnection(secondElement));
             connectionsSecond.Add(new ElementConnection(firstElement));
-            Debug.Log("Дошёл сюда");
+
             float mass1 = manager.GetComponentData<WeightComponent>(first).WeightValue;
             float mass2 = manager.GetComponentData<WeightComponent>(second).WeightValue;
 
@@ -73,7 +73,6 @@ namespace Elements.Systems
 
             manager.SetComponentData(first, new WeightComponent() { WeightValue = resultMass1 });
             manager.SetComponentData(second, new WeightComponent() { WeightValue = resultMass2 });
-            Debug.Log("Дошёл сюда fsdad");
         }             
 
         [BurstCompile]
@@ -87,6 +86,11 @@ namespace Elements.Systems
                 Entity entityA = collisionEvent.EntityA;
                 Entity entityB = collisionEvent.EntityB;
 
+                ConnectElements(entityA, entityB);
+            }
+
+            public void ConnectElements(Entity entityA, Entity entityB)
+            {
                 bool isElementA = BaseElementData.HasComponent(entityA);
                 bool isElementB = BaseElementData.HasComponent(entityB);
 
@@ -117,7 +121,7 @@ namespace Elements.Systems
                     float resultMass2 = Mathf.Clamp(mass2 - mass1 * ElementProrityTable.ElementPriorities[(int)firstElement.ValueRO.Type, (int)secondElement.ValueRO.Type], 0, Mathf.Infinity);
 
                     WeightComponentData.GetRefRW(entityA).ValueRW.WeightValue = resultMass1;
-                    WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue = resultMass2;                   
+                    WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue = resultMass2;
                 }
             }
         }

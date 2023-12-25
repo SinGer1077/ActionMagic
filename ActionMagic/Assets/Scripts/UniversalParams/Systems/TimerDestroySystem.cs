@@ -28,7 +28,6 @@ namespace Universal.Systems
             {
                 if (destroyComponent.ValueRO.Should == true)
                 {
-                    Debug.Log(destroyComponent.ValueRW.MainEntity.Index);
                     destroyComponent.ValueRW.timerToDestroy = timerComponent.ValueRO.timer;
                     if (destroyComponent.ValueRO.timerToDestroy <= 0)
                     {

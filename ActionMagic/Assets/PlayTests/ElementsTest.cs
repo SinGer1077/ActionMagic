@@ -7,9 +7,11 @@ using UnityEngine.TestTools;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.Tests;
+using Unity.Entities.CodeGen;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Physics;
+using Unity.Jobs;
 
 using Elements.Components;
 using Elements.Systems;
@@ -50,7 +52,7 @@ public class ElementsTest : ECSTestsFixture
 
     [Test]
     public void When_CreateElements_Than_ElementsExistInWorld()
-    {                
+    {  
         int caseValue = 5;
         var entity = m_Manager.CreateEntity(
             typeof(ElementsSpawnerComponent));
@@ -168,44 +170,67 @@ public class ElementsTest : ECSTestsFixture
         var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 30.0f);
         ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
 
+        World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
+        World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
         
+        if (m_Manager.HasComponent<ShouldBeDestroyedComponent>(first))
+        {
+            var shouldBe = m_Manager.GetComponentData<ShouldBeDestroyedComponent>(first);
+            Assert.AreEqual(true, shouldBe.Should);
+        }
+    }
+
+    [Test]
+    public void When_ELementCollideWithDeadElement_Than_ItsWeightDoNotChange()
+    {
+        var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);
+        var third = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 5.0f);
+
+        var thirdWeightBefore = m_Manager.GetComponentData<WeightComponent>(third);
+
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
+
+        World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
+        World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
+
+        ElementsConnectionSystem.ConnectElements(m_Manager, first, third);
+
+        World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
+        World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
+
+        Assert.AreEqual(thirdWeightBefore.WeightValue, m_Manager.GetComponentData<WeightComponent>(third).WeightValue);
+    }
+
+    [Test]
+    public void When_ElementCollide_Than_WeightChanged()
+    {
+        //var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
+        //var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 30.0f);
+
+        //var collisionEventJob = new ElementsConnectionSystem.CollisionEventElementsJob 
+        //{
+        //    BaseElementData = m_Manager.Get GetComponentLookup<BaseElementComponent>(),
+        //    WeightComponentData = SystemAPI.GetComponentLookup<WeightComponent>(),
+        //    ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
+        //};
+
+        //collisionEventJob.ConnectElements(first, second);
+
+        //World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().Update(m_Manager.WorldUnmanaged);
+        //World.GetOrCreateSystem<CheckWeightSystem>().Update(m_Manager.WorldUnmanaged);
+
+        //if (m_Manager.HasComponent<ShouldBeDestroyedComponent>(first))
+        //{
+        //    var shouldBe = m_Manager.GetComponentData<ShouldBeDestroyedComponent>(first);
+        //    Assert.AreEqual(true, shouldBe.Should);
+        //}
     }
 
     [Test]
     public void When_WaterElementAndFireElementConnects_Than_VaporReactionShouldBeCreated()
     {
 
-    }
-
-    //[UnityTest]
-    //public IEnumerator When_OnSceneTwoElementWithPhysics_Than_AfterUpdateTheyConnectChanges()
-    //{
-    //    var spawnerEntity = m_Manager.CreateEntity(typeof(PhysicsElementsSpawnerComponent));
-    //    PhysicsElementsSpawnerComponent spawnerComponent = m_Manager.GetComponentData<PhysicsElementsSpawnerComponent>(spawnerEntity);
-        
-
-    //    var typesBuffer = m_Manager.AddBuffer<ElementBuffer>(spawnerComponent.Spawner);
-    //    typesBuffer.Add(new ElementBuffer { type = ElementTypes.Water });
-    //    typesBuffer.Add(new ElementBuffer { type = ElementTypes.Fire });
-
-    //    var prefabsBuffer = m_Manager.AddBuffer<ElementPrefab>(spawnerComponent.Spawner);
-    //    prefabsBuffer.Add(new ElementPrefab { Prefab = (GameObject)Resources.Load("Assets / Prefabs / WaterElement.prefab")), type = ElementTypes.Water);
-
-    //    while (true)
-    //    {
-    //        World.Update();
-    //        var entities = m_Manager.GetAllEntities(Allocator.Persistent);
-    //        foreach (var entity in entities)
-    //        {
-    //            if (m_Manager.HasComponent<PhysicsElementsSpawnerComponent>(entity))
-    //            {
-    //                Debug.Log("Finded");
-    //            }
-    //        }
-    //        Debug.Log("Updating");
-            
-    //        yield return null;
-    //    }
-    //}
+    }  
     
 }
