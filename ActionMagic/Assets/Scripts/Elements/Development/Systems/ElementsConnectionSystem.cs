@@ -3,6 +3,7 @@ using System;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Jobs;
 using Unity.Physics;
 using Unity.Physics.Systems;
@@ -36,8 +37,9 @@ namespace Elements.Systems
             {
                 BaseElementData = SystemAPI.GetComponentLookup<BaseElementComponent>(),
                 WeightComponentData = SystemAPI.GetComponentLookup<WeightComponent>(),
-                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
-            };
+                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
+                physicsWorld = SystemAPI.GetSingletonRW<PhysicsWorldSingleton>().ValueRW.PhysicsWorld
+        };
             var handle = job.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
             handle.Complete();
         }
@@ -95,15 +97,17 @@ namespace Elements.Systems
             [ReadOnly] public ComponentLookup<BaseElementComponent> BaseElementData;
             public ComponentLookup<WeightComponent> WeightComponentData;
             public BufferLookup<ElementConnection> ConnectionsData;
+            public PhysicsWorld physicsWorld; 
             public void Execute(CollisionEvent collisionEvent)
             {
                 Entity entityA = collisionEvent.EntityA;
                 Entity entityB = collisionEvent.EntityB;
 
-                ConnectElements(entityA, entityB);
+                float3 contactPoint = collisionEvent.CalculateDetails(ref physicsWorld).AverageContactPointPosition;
+                ConnectElements(entityA, entityB, contactPoint);
             }
 
-            public void ConnectElements(Entity entityA, Entity entityB)
+            public void ConnectElements(Entity entityA, Entity entityB, float3 contactPoint)
             {
                 bool isElementA = BaseElementData.HasComponent(entityA);
                 bool isElementB = BaseElementData.HasComponent(entityB);
@@ -123,9 +127,9 @@ namespace Elements.Systems
                             return;
                         }
                     }
-
-                    connectionsFirst.Add(new ElementConnection(secondElement.ValueRO));
-                    connectionsSecond.Add(new ElementConnection(firstElement.ValueRO));
+                    
+                    connectionsFirst.Add(new ElementConnection(secondElement.ValueRO, contactPoint));
+                    connectionsSecond.Add(new ElementConnection(firstElement.ValueRO, contactPoint));
 
                     var mass1 = WeightComponentData.GetRefRW(entityA).ValueRW;
                     var mass2 = WeightComponentData.GetRefRW(entityB).ValueRW;
