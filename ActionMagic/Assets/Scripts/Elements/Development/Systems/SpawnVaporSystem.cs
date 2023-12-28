@@ -26,7 +26,8 @@ namespace Elements.Systems
                 ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged),
                 Config = SystemAPI.GetSingleton<VaporConfigComponent>(),
                 ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
-                TransformData = SystemAPI.GetComponentLookup<LocalTransform>()
+                TransformData = SystemAPI.GetComponentLookup<LocalTransform>(),
+                ScaleData = SystemAPI.GetComponentLookup<PostTransformMatrix>()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -39,6 +40,7 @@ namespace Elements.Systems
             public VaporConfigComponent Config;
             public BufferLookup<ElementConnection> ConnectionsData;
             public ComponentLookup<LocalTransform> TransformData;
+            public ComponentLookup<PostTransformMatrix> ScaleData;
 
             void Execute(Entity entity, ref BaseElementComponent element)
             {
@@ -50,8 +52,12 @@ namespace Elements.Systems
                         if (connections[i].ConnectedElement.Type == ElementTypes.Fire && !connections[i].IsReacted)
                         {                            
                             var vaporEntity = ECB.Instantiate(Config.VaporPrefab);
-                            var transform = TransformData[entity];
-                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = transform.Scale, WaterElementEntity = entity} );
+
+                            float scaleValue = 1;
+                            if (ScaleData.TryGetComponent(entity, out var scale))
+                                scaleValue = scale.Value.c0.x * scale.Value.c2.z;
+
+                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity} );
 
                             connections[i] = new ElementConnection(connections[i], true);
                         }
