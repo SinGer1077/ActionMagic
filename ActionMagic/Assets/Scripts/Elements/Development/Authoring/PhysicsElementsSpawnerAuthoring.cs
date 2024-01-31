@@ -17,6 +17,9 @@ namespace Elements.Authoring
         [SerializeField]
         private GameObject[] TestPrefabs;
 
+        [SerializeField]
+        private Transform SpawnPoint;
+
         class Baker : Baker<PhysicsElementsSpawnerAuthoring>
         {
             public override void Bake(PhysicsElementsSpawnerAuthoring authoring)
@@ -40,7 +43,8 @@ namespace Elements.Authoring
 
                 AddComponent(entity, new PhysicsElementsSpawnerComponent
                 {
-                    Spawner = entity
+                    Spawner = entity,
+                    SpawnPoint = authoring.SpawnPoint.position
                 });
             }
         }
