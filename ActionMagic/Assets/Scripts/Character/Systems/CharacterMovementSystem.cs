@@ -42,7 +42,6 @@ namespace Character.Systems
             {
                 float3 verticalMovement = transform.Forward() * InputVector.y * movement.MovementSpeed;
                 float3 horizontalMovement = transform.Right() * InputVector.x * movement.MovementSpeed;
-                //velocity.Linear = new float3(movement.MovementSpeed * InputVector.x, 0f, movement.MovementSpeed * InputVector.y);
                 velocity.Linear = verticalMovement + horizontalMovement;
             }
         }
