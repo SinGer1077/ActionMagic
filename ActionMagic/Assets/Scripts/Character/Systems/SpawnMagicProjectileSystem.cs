@@ -45,11 +45,15 @@ namespace Character.Systems {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 var projectile = PhysicsElementsSpawnerSystem.CreatePhysicsElement(controller.CurrentType, _ecb);
-                var characterTransform = state.EntityManager.GetComponentData<LocalTransform>(controller.CharacterParent);
+                var characterTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.CameraTarget);
                 var muzzleTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.SpawnAttackPosition);
+
+                float3 screenDirection = Camera.main.ScreenPointToRay(new Vector2(Screen.height / 2, Screen.width / 2)).direction;
+                float3 cameraDirection = characterTransform.Forward;
+
                 _ecb.AddComponent(projectile, new SimpleProjectileComponent
-                    { Position = muzzleTransform.Position, Direction = characterTransform.Forward(), Created = false, FlySpeed = 10.0f }); 
-                    //добавить лайфтайм для снарядов, сделать это в виде конфигов
+                    { Position = muzzleTransform.Position, Direction = cameraDirection, 
+                    Created = false, FlySpeed = 10.0f }); 
             }
             
             _ecb.Playback(state.EntityManager);
