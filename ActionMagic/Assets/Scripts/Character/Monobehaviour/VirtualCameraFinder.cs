@@ -32,7 +32,8 @@ namespace Character.Monobehaviour
         {
             if (_isNotNull)
             {
-                LocalTransform characterTransform = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<LocalTransform>(_character);
+                CharacterControllerComponent controller = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<CharacterControllerComponent>(_character);
+                LocalToWorld characterTransform = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<LocalToWorld>(controller.CameraTarget);
                 _target.position = characterTransform.Position;
                 _target.rotation = characterTransform.Rotation;
             }

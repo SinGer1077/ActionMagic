@@ -8,5 +8,6 @@ namespace Character.Components
         public int CurrentType;
         public Entity CharacterParent;
         public Entity SpawnAttackPosition;
+        public Entity CameraTarget;
     }
 }

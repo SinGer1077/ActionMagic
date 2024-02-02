@@ -16,6 +16,9 @@ namespace Character.Authoring
         [SerializeField]
         private GameObject _spawnAttackPosition;
 
+        [SerializeField]
+        private GameObject _cameraTarget;
+
         class Baker : Baker<CharacterControllerAuthoring>
         {
             public override void Bake(CharacterControllerAuthoring authoring)
@@ -25,7 +28,8 @@ namespace Character.Authoring
                 {
                     CurrentType = 0,
                     CharacterParent = GetEntity(authoring._characterTransform, TransformUsageFlags.Dynamic),
-                    SpawnAttackPosition = GetEntity(authoring._spawnAttackPosition, TransformUsageFlags.Dynamic)
+                    SpawnAttackPosition = GetEntity(authoring._spawnAttackPosition, TransformUsageFlags.Dynamic),
+                    CameraTarget = GetEntity(authoring._cameraTarget, TransformUsageFlags.Dynamic),
                 });
             }
         }
