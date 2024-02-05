@@ -9,6 +9,7 @@ using Unity.Physics;
 using Unity.Physics.Systems;
 
 using Elements.Components;
+using Elements.Data;
 using Universal.Components;
 
 namespace Elements.Systems
@@ -40,6 +41,7 @@ namespace Elements.Systems
         public partial struct AddDestroyComponentJob : IJobEntity
         {          
             public EntityCommandBuffer ECB;
+            public BufferLookup<ElementConnection> connections;
 
             void Execute(Entity entity, ref WeightComponent weight)
             {
@@ -49,7 +51,7 @@ namespace Elements.Systems
                     ECB.AddComponent(entity, new ShouldBeDestroyedComponent {MainEntity = entity, Should = true, timerToDestroy = timeToDestroy});
                     ECB.AddComponent(entity, new TimerComponent { timer = timeToDestroy });                    
                 }
-            }
+            }            
         }
     }
 }

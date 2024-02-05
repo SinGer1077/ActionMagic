@@ -2,7 +2,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
-
+using Unity.Physics.Systems;
 using UnityEngine;
 
 using Elements.Components;
@@ -10,7 +10,8 @@ using Elements.Data;
 
 namespace Elements.Systems
 {
-
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct BaseElementsSystem : ISystem
     {
         [BurstCompile]
@@ -22,25 +23,21 @@ namespace Elements.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            //state.Enabled = false;
-            int count = 0;
-            //var query = state.GetEntityQuery(typeof(BaseElementComponent));
-            //count = query.CalculateEntityCount();
-            foreach (var (element, transform) in SystemAPI.Query<RefRO<BaseElementComponent>, RefRO<LocalTransform>>())
+            var setElementIdJob = new SetElementIdJob();
+            var setElementIdJobHandle = setElementIdJob.Schedule(state.Dependency);
+            setElementIdJobHandle.Complete();
+        }
+
+        [BurstCompile]
+        public partial struct SetElementIdJob : IJobEntity
+        {
+            void Execute(Entity entity, ref BaseElementComponent element)
             {
-                //Debug.Log(element.ValueRO.Type);
-                //count++;
-                //Debug.Log(transform.ValueRO.Position);
+                if (element.id.Index != entity.Index)
+                {
+                    element.id.Index = entity.Index;
+                }
             }
-            //var allEntities = state.EntityManager.GetAllEntities(Allocator.Persistent);
-            //int temp = 0;
-            //foreach (var ent in allEntities)
-            //{
-            //    if (state.EntityManager.HasComponent(ent, typeof(BaseElementComponent)))
-            //    {
-            //        temp++;
-            //    }
-            //}
         }
     }
 }

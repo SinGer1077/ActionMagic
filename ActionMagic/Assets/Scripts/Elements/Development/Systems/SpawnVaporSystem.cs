@@ -3,12 +3,15 @@ using UnityEngine;
 using Unity.Entities;
 using Unity.Burst;
 using Unity.Transforms;
+using Unity.Physics.Systems;
 
 using Elements.Data;
 using Elements.Components;
 
 namespace Elements.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct SpawnVaporSystem : ISystem
     {
         [BurstCompile]

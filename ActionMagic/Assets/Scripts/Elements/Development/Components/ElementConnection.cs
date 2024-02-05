@@ -16,7 +16,7 @@ namespace Elements.Data
 
         public ElementConnection (BaseElementComponent element)
         {
-            id = element.id;
+            id = element.id.Index;
             ConnectedElement = element;
             IsReacted = false;
             ConnectionPosition = Vector3.zero;
@@ -24,7 +24,7 @@ namespace Elements.Data
 
         public ElementConnection(BaseElementComponent element, Vector3 position)
         {
-            id = element.id;
+            id = element.id.Index;
             ConnectedElement = element;
             IsReacted = false;
             ConnectionPosition = position;

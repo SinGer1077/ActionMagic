@@ -7,7 +7,7 @@ namespace Elements.Components
 {
     public struct BaseElementComponent : IComponentData
     {
-        public int id;
+        public Entity id;
         public ElementTypes Type;
     }
 }

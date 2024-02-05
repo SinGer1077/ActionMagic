@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Physics.Systems;
 using UnityEngine;
 
 using Elements.Components;
@@ -9,6 +10,8 @@ using Universal.Components;
 
 namespace Elements.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct ElementsSpawnerSystem : ISystem
     {
         private static EntityCommandBuffer _ecb;
@@ -41,7 +44,7 @@ namespace Elements.Systems
         public static Entity CreateElementEntity(EntityManager manager, ElementTypes type, float weight)
         {           
             var entity = manager.CreateEntity(typeof(BaseElementComponent), typeof(ElementConnection), typeof(WeightComponent));
-            manager.SetComponentData(entity, new BaseElementComponent { id = entity.Index, Type = type });
+            manager.SetComponentData(entity, new BaseElementComponent { id = entity, Type = type });
             manager.SetComponentData(entity, new WeightComponent { WeightValue = weight });
             return entity;
         }
@@ -51,7 +54,7 @@ namespace Elements.Systems
         {
             EntityArchetype archetype = manager.CreateArchetype(typeof(BaseElementComponent), typeof(ElementConnection), typeof(WeightComponent));
             var entity = buffer.CreateEntity(archetype);
-            buffer.SetComponent(entity, new BaseElementComponent { id = entity.Index, Type = type });
+            buffer.SetComponent(entity, new BaseElementComponent { id = entity, Type = type });
             buffer.SetComponent(entity, new WeightComponent { WeightValue = weight });
             return entity;
         }

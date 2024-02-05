@@ -5,12 +5,15 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Transforms;
 using Unity.Mathematics;
+using Unity.Physics.Systems;
 
 using Elements.Components;
 using Elements.Data;
 
 namespace Elements.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct PhysicsElementsSpawnerSystem : ISystem
     {
         private static EntityCommandBuffer _ecb;

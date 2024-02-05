@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Jobs;
+using Unity.Transforms;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
@@ -33,15 +34,25 @@ namespace Elements.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var job = new CollisionEventElementsJob
+            var collisionJob = new CollisionEventElementsJob
             {
                 BaseElementData = SystemAPI.GetComponentLookup<BaseElementComponent>(),
                 WeightComponentData = SystemAPI.GetComponentLookup<WeightComponent>(),
                 ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
                 physicsWorld = SystemAPI.GetSingletonRW<PhysicsWorldSingleton>().ValueRW.PhysicsWorld
-        };
-            var handle = job.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
-            handle.Complete();
+            };
+            var collisionHandle = collisionJob.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
+            collisionHandle.Complete();
+
+            var triggerJob = new CollisionEventElementsJob
+            {
+                BaseElementData = SystemAPI.GetComponentLookup<BaseElementComponent>(),
+                WeightComponentData = SystemAPI.GetComponentLookup<WeightComponent>(),
+                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
+                physicsWorld = SystemAPI.GetSingletonRW<PhysicsWorldSingleton>().ValueRW.PhysicsWorld
+            };
+            var triggerHandle = triggerJob.Schedule(SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
+            triggerHandle.Complete();
         }
 
         [BurstCompile]
@@ -60,7 +71,7 @@ namespace Elements.Systems
 
             foreach (ElementConnection connection in connectionsFirst)
             {
-                if (connection.id == secondElement.id)
+                if (connection.id == secondElement.id.Index)
                 {
                     return;
                 }
@@ -85,11 +96,51 @@ namespace Elements.Systems
             float resultMass1 = firstWeight.WeightValue;
             if (firstWeight.Infinity == false)
             {
+                float priority = ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType];
                 resultMass1 = Mathf.Clamp(firstWeight.WeightValue - secondWeight.WeightValue
-                    * ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType], 0, Mathf.Infinity) * 1 - Convert.ToInt32(secondWeight.Infinity);
+                    * priority, 0, Mathf.Infinity) 
+                    * (1 - Convert.ToInt32(secondWeight.Infinity) + Convert.ToInt32(priority == 0));
             }
             return resultMass1;
-        }        
+        }
+
+        private static void ConnectElements(ComponentLookup<BaseElementComponent> BaseElementData, 
+            ComponentLookup<WeightComponent> WeightComponentData,
+            BufferLookup<ElementConnection> ConnectionsData,
+            Entity entityA, Entity entityB, float3 contactPoint)
+        {
+            bool isElementA = BaseElementData.HasComponent(entityA);
+            bool isElementB = BaseElementData.HasComponent(entityB);
+
+            if (isElementA && isElementB)
+            {
+                var firstElement = BaseElementData.GetRefRO(entityA);
+                var secondElement = BaseElementData.GetRefRO(entityB);
+
+                var connectionsFirst = ConnectionsData[entityA];
+                var connectionsSecond = ConnectionsData[entityB];
+
+                foreach (ElementConnection connection in connectionsFirst)
+                {
+                    if (connection.id == secondElement.ValueRO.id.Index)
+                    {
+                        return;
+                    }
+                }
+
+                connectionsFirst.Add(new ElementConnection(secondElement.ValueRO, contactPoint));
+                connectionsSecond.Add(new ElementConnection(firstElement.ValueRO, contactPoint));
+
+                var mass1 = WeightComponentData.GetRefRW(entityA).ValueRW;
+                var mass2 = WeightComponentData.GetRefRW(entityB).ValueRW;
+
+                float resultMass1 = ChangeWeight(mass1, mass2, firstElement.ValueRO.Type, secondElement.ValueRO.Type);
+                float resultMass2 = ChangeWeight(mass2, mass1, secondElement.ValueRO.Type, firstElement.ValueRO.Type);
+
+                WeightComponentData.GetRefRW(entityA).ValueRW.WeightValue = resultMass1;
+                WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue = resultMass2;
+            }
+        }
 
         [BurstCompile]
         public struct CollisionEventElementsJob : ICollisionEventsJob
@@ -104,42 +155,25 @@ namespace Elements.Systems
                 Entity entityB = collisionEvent.EntityB;
 
                 float3 contactPoint = collisionEvent.CalculateDetails(ref physicsWorld).AverageContactPointPosition;
-                ConnectElements(entityA, entityB, contactPoint);
-            }
+                ConnectElements(BaseElementData, WeightComponentData, ConnectionsData, entityA, entityB, contactPoint);
+            }            
+        }
 
-            public void ConnectElements(Entity entityA, Entity entityB, float3 contactPoint)
-            {
-                bool isElementA = BaseElementData.HasComponent(entityA);
-                bool isElementB = BaseElementData.HasComponent(entityB);
-
-                if (isElementA && isElementB)
-                {
-                    var firstElement = BaseElementData.GetRefRO(entityA);
-                    var secondElement = BaseElementData.GetRefRO(entityB);
-
-                    var connectionsFirst = ConnectionsData[entityA];
-                    var connectionsSecond = ConnectionsData[entityB];
-
-                    foreach (ElementConnection connection in connectionsFirst)
-                    {
-                        if (connection.id == secondElement.ValueRO.id)
-                        {
-                            return;
-                        }
-                    }
-                    
-                    connectionsFirst.Add(new ElementConnection(secondElement.ValueRO, contactPoint));
-                    connectionsSecond.Add(new ElementConnection(firstElement.ValueRO, contactPoint));
-
-                    var mass1 = WeightComponentData.GetRefRW(entityA).ValueRW;
-                    var mass2 = WeightComponentData.GetRefRW(entityB).ValueRW;
-
-                    float resultMass1 = ChangeWeight(mass1, mass2, firstElement.ValueRO.Type, secondElement.ValueRO.Type);
-                    float resultMass2 = ChangeWeight(mass2, mass1, secondElement.ValueRO.Type, firstElement.ValueRO.Type);
-
-                    WeightComponentData.GetRefRW(entityA).ValueRW.WeightValue = resultMass1;
-                    WeightComponentData.GetRefRW(entityB).ValueRW.WeightValue = resultMass2;
-                }
+        [BurstCompile]
+        public struct TriggerEventElementsJob : ITriggerEventsJob
+        {
+            [ReadOnly] public ComponentLookup<BaseElementComponent> BaseElementData;
+            public ComponentLookup<WeightComponent> WeightComponentData;
+            public ComponentLookup<LocalTransform> TransformComponentData;
+            public BufferLookup<ElementConnection> ConnectionsData;            
+            public PhysicsWorld physicsWorld;
+            public void Execute(TriggerEvent triggerEvent)
+            {               
+                Entity entityA = triggerEvent.EntityA;
+                Entity entityB = triggerEvent.EntityB;
+                Debug.Log(entityA);
+                float3 contactPoint = TransformComponentData[entityA].Position;
+                ConnectElements(BaseElementData, WeightComponentData, ConnectionsData, entityA, entityB, contactPoint);
             }
         }
     }

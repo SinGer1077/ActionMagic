@@ -25,14 +25,15 @@ namespace Elements.Authoring
 
                 AddComponent(entity, new BaseElementComponent
                 {
-                    id = entity.Index,
+                    id = entity,
                     Type = authoring.type
                 });
 
                 AddComponent(entity, new WeightComponent
                 {
                     WeightValue = authoring.weight,
-                    Infinity = authoring.infinity
+                    Infinity = authoring.infinity,
+                    InitWeightValue = authoring.weight
                 });
 
                 AddBuffer<ElementConnection>(entity);

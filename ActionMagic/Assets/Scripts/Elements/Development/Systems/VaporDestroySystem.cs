@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Entities;
 using Unity.Burst;
 using Unity.Transforms;
+using Unity.Physics.Systems;
 
 using Elements.Components;
 using Elements.Data;
@@ -11,6 +12,8 @@ using Universal.Components;
 
 namespace Elements.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct VaporDestroySystem : ISystem
     {
         [BurstCompile]
@@ -26,7 +29,8 @@ namespace Elements.Systems
             var job = new DestroyVaporJob
             {
                 ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged),
-                ShouldBeDestroyedData = SystemAPI.GetComponentLookup<ShouldBeDestroyedComponent>()
+                ShouldBeDestroyedData = SystemAPI.GetComponentLookup<ShouldBeDestroyedComponent>(),
+                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -56,18 +60,38 @@ namespace Elements.Systems
         {
             public EntityCommandBuffer ECB;
             public ComponentLookup<ShouldBeDestroyedComponent> ShouldBeDestroyedData;
+            public BufferLookup<ElementConnection> ConnectionsData;
 
             void Execute(Entity entity, ref VaporComponent vapor)
             {
+                bool flag = false;
+                foreach (var connect in ConnectionsData[vapor.WaterElementEntity])
+                {
+                    if (connect.ConnectedElement.Type == ElementTypes.Fire)
+                        flag = true;
+                }
+
+                if (flag == false)
+                {
+                    AddDestroy(ECB, entity);
+                    return;
+                }
+
+
                 if (ShouldBeDestroyedData.HasComponent(vapor.WaterElementEntity))
                 {
                     if (ShouldBeDestroyedData[vapor.WaterElementEntity].Should == true)
                     {
-                        float timeToDestroy = 10.0f;
-                        ECB.AddComponent(entity, new ShouldBeDestroyedComponent { MainEntity = entity, Should = true, timerToDestroy = timeToDestroy });
-                        ECB.AddComponent(entity, new TimerComponent { timer = timeToDestroy });
+                        AddDestroy(ECB, entity);
                     }
                 }
+            }
+
+            private void AddDestroy(EntityCommandBuffer ECB, Entity entity)
+            {
+                float timeToDestroy = 10.0f;
+                ECB.AddComponent(entity, new ShouldBeDestroyedComponent { MainEntity = entity, Should = true, timerToDestroy = timeToDestroy });
+                ECB.AddComponent(entity, new TimerComponent { timer = timeToDestroy });
             }
         }
     }

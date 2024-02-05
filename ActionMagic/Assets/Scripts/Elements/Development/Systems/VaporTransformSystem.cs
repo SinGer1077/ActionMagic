@@ -5,12 +5,15 @@ using Unity.Burst;
 using Unity.Transforms;
 using Unity.Physics;
 using Unity.Entities.Graphics;
+using Unity.Physics.Systems;
 
 using Elements.Components;
 using Elements.Data;
 
 namespace Elements.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct VaporTransformSystem : ISystem
     {
         [BurstCompile]
