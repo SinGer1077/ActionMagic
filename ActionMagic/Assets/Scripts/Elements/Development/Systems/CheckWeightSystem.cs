@@ -27,13 +27,18 @@ namespace Elements.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            //var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            //var _ecb = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged);
+            var _ecb = new EntityCommandBuffer(Allocator.TempJob);
             var job = new AddDestroyComponentJob
             {
-                ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged)
+                ECB = _ecb
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
+
+            _ecb.Playback(state.EntityManager);
+            _ecb.Dispose();
         }
 
         [WithNone(typeof(ShouldBeDestroyedComponent))]

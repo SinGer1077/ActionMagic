@@ -51,7 +51,6 @@ namespace Elements.Systems
                     Entity connectedEntity = connectionsData[entity][i].ConnectedElement.id;
                     if (weightData[connectedEntity].WeightValue <= 0)
                     {
-                        Debug.Log("Deleted "+connectedEntity.Index + " in " + entity.Index);
                         connectionsData[entity].RemoveAt(i);
                     }
                 }

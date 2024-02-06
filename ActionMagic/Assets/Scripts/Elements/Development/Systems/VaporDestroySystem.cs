@@ -25,12 +25,16 @@ namespace Elements.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            //var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            var _ecb = new EntityCommandBuffer(Unity.Collections.Allocator.TempJob);
+
             var job = new DestroyVaporJob
             {
-                ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged),
+                //ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged),
+                ECB = _ecb,
                 ShouldBeDestroyedData = SystemAPI.GetComponentLookup<ShouldBeDestroyedComponent>(),
-                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
+                ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
+                EntityData = SystemAPI.GetEntityStorageInfoLookup()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -52,6 +56,9 @@ namespace Elements.Systems
                 }
             }
 
+            _ecb.Playback(state.EntityManager);
+            _ecb.Dispose();
+
         }
 
         [WithNone(typeof(ShouldBeDestroyedComponent))]
@@ -61,9 +68,17 @@ namespace Elements.Systems
             public EntityCommandBuffer ECB;
             public ComponentLookup<ShouldBeDestroyedComponent> ShouldBeDestroyedData;
             public BufferLookup<ElementConnection> ConnectionsData;
+            public EntityStorageInfoLookup EntityData;
 
             void Execute(Entity entity, ref VaporComponent vapor)
-            {
+            {               
+                if (!EntityData.Exists(vapor.WaterElementEntity))
+                {
+                    Debug.Log("Here");
+                    AddDestroy(ECB, entity);
+                    return;
+                }                
+
                 bool flag = false;
                 foreach (var connect in ConnectionsData[vapor.WaterElementEntity])
                 {

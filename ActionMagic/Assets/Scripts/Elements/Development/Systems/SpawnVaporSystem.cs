@@ -23,10 +23,12 @@ namespace Elements.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            //var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+            //var ecb = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.TempJob);
             var job = new CreateVaporJob
             {
-                ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged),
+                ECB = ecb,
                 Config = SystemAPI.GetSingleton<VaporConfigComponent>(),
                 ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
                 TransformData = SystemAPI.GetComponentLookup<LocalTransform>(),
@@ -34,6 +36,9 @@ namespace Elements.Systems
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
+
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
        
         [BurstCompile]
@@ -53,7 +58,7 @@ namespace Elements.Systems
                     for (int i = 0; i < connections.Length; i++)
                     {                        
                         if (connections[i].ConnectedElement.Type == ElementTypes.Fire && !connections[i].IsReacted)
-                        {                            
+                        {
                             var vaporEntity = ECB.Instantiate(Config.VaporPrefab);
 
                             float scaleValue = 1;
@@ -66,6 +71,8 @@ namespace Elements.Systems
                         }
                     }
                 }
+
+                
             }
         }
     }

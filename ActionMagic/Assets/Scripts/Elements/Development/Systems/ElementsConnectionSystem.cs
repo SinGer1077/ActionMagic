@@ -118,16 +118,27 @@ namespace Elements.Systems
                 var secondElement = BaseElementData.GetRefRO(entityB);
 
                 var connectionsFirst = ConnectionsData[entityA];
-                var connectionsSecond = ConnectionsData[entityB];
+                var connectionsSecond = ConnectionsData[entityB];               
 
                 foreach (ElementConnection connection in connectionsFirst)
-                {
+                {                    
                     if (connection.id == secondElement.ValueRO.id.Index)
                     {
                         return;
                     }
                 }
 
+                foreach (ElementConnection connection in connectionsSecond)
+                {
+                    if (connection.id == firstElement.ValueRO.id.Index)
+                    {
+                        return;
+                    }
+                }
+
+                //Debug.Log(firstElement.ValueRO.id.Index + " " + secondElement.ValueRO.id.Index);
+                //Debug.Log(connectionsFirst[0]);
+                //Debug.Log(connectionsSecond[0]);
                 connectionsFirst.Add(new ElementConnection(secondElement.ValueRO, contactPoint));
                 connectionsSecond.Add(new ElementConnection(firstElement.ValueRO, contactPoint));
 
