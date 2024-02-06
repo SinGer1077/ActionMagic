@@ -53,7 +53,7 @@ namespace Character.Systems {
 
                 _ecb.AddComponent(projectile, new SimpleProjectileComponent
                     { Position = muzzleTransform.Position, Direction = cameraDirection, 
-                    Created = false, FlySpeed = 10.0f });
+                    Created = false, FlySpeed = 10.0f, LifeTime = 10.0f});
             }
             
             _ecb.Playback(state.EntityManager);

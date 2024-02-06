@@ -29,9 +29,9 @@ namespace Elements.Systems
         public void OnUpdate(ref SystemState state)
         {
             var job = new DeleteConnectionsJob
-            {
-                weightData = SystemAPI.GetComponentLookup<WeightComponent>(),
-                connectionsData = SystemAPI.GetBufferLookup<ElementConnection>()
+            {                
+                connectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
+                EntityData = SystemAPI.GetEntityStorageInfoLookup()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -40,16 +40,16 @@ namespace Elements.Systems
         [BurstCompile]
         [WithNone(typeof(ShouldBeDestroyedComponent))]
         public partial struct DeleteConnectionsJob : IJobEntity
-        {
-            public ComponentLookup<WeightComponent> weightData;
+        {            
             public BufferLookup<ElementConnection> connectionsData;
+            public EntityStorageInfoLookup EntityData;
 
             void Execute(Entity entity, ref BaseElementComponent element)
             {
                 for (int i = 0; i < connectionsData[entity].Length; i++)
                 {
                     Entity connectedEntity = connectionsData[entity][i].ConnectedElement.id;
-                    if (weightData[connectedEntity].WeightValue <= 0)
+                    if (!EntityData.Exists(connectedEntity))
                     {
                         connectionsData[entity].RemoveAt(i);
                     }

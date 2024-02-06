@@ -9,5 +9,7 @@ namespace Character.Components
         public float3 Direction;
         public bool Created;
         public float FlySpeed;
+
+        public float LifeTime;
     }
 }
