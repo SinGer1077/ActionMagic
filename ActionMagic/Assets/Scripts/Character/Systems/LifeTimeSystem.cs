@@ -4,10 +4,14 @@ using Unity.Entities;
 using Unity.Burst;
 using Unity.Collections;
 
+using Unity.Physics.Systems;
+
 using Character.Components;
 
 namespace Character.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct LifeTimeSystem : ISystem
     {
         private EntityCommandBuffer _ecb;

@@ -94,7 +94,7 @@ namespace Elements.Systems
         private static float ChangeWeight(WeightComponent firstWeight, WeightComponent secondWeight, ElementTypes firstType, ElementTypes secondType)
         {
             float resultMass1 = firstWeight.WeightValue;
-            if (firstWeight.Infinity == false)
+            if (firstWeight.Infinity == false && firstType != secondType)
             {
                 float priority = ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType];
                 resultMass1 = Mathf.Clamp(firstWeight.WeightValue - secondWeight.WeightValue

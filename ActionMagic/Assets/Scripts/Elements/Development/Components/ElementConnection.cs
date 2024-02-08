@@ -3,9 +3,7 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Entities;
 
-using Elements.Components;
-
-namespace Elements.Data
+namespace Elements.Components
 {
     public struct ElementConnection : IBufferElementData
     {

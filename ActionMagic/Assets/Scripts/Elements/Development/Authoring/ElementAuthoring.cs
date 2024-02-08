@@ -35,7 +35,7 @@ namespace Elements.Authoring
                     Infinity = authoring.infinity,
                     InitWeightValue = authoring.weight
                 });
-
+                
                 AddBuffer<ElementConnection>(entity);
             }
         }

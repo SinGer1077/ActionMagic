@@ -58,5 +58,11 @@ namespace Elements.Systems
 
             return entity;
         }
+
+        public static Entity CreatePhysicsElement(Entity prefab, EntityCommandBuffer ecb)
+        {            
+            var entity = ecb.Instantiate(prefab);
+            return entity;
+        }
     }
 }

@@ -12,6 +12,8 @@ using Elements.Systems;
 
 using Character.Components;
 
+using Universal.Components;
+
 namespace Character.Systems {
 
     public partial struct SpawnMagicProjectileSystem : ISystem
@@ -34,30 +36,52 @@ namespace Character.Systems {
             {               
                 controller.CurrentType = 0;
             }
-
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 controller.CurrentType = 1;
             }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                controller.CurrentType = 2;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                controller.CurrentType = 3;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                controller.CurrentType = 4;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                controller.CurrentType = 5;
+            }
 
             SystemAPI.SetSingleton(controller);
+            var spellBook = SystemAPI.GetSingleton<MagicBookComponent>();
             
             if (Input.GetKeyDown(KeyCode.E))
             {
-                var projectile = PhysicsElementsSpawnerSystem.CreatePhysicsElement(controller.CurrentType, _ecb);
+                var spell = state.EntityManager.GetBuffer<SpellBuffer>(spellBook.SpellBook)[controller.CurrentType];
+
+                //var projectile = PhysicsElementsSpawnerSystem.CreatePhysicsElement(controller.CurrentType, _ecb);
+                var projectile = PhysicsElementsSpawnerSystem.CreatePhysicsElement(spell.SpellPrefab, _ecb);
+
                 var characterTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.CameraTarget);
                 var muzzleTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.SpawnAttackPosition);
 
                 float3 screenDirection = Camera.main.ScreenPointToRay(new Vector2(Screen.height / 2, Screen.width / 2)).direction;
                 float3 cameraDirection = characterTransform.Forward;
+                
+                _ecb.AddComponent(projectile, new WeightComponent { WeightValue = spell.ElementWeight, InitWeightValue = spell.ElementWeight, Infinity = false});                
 
                 _ecb.AddComponent(projectile, new SimpleProjectileComponent
                     { Position = muzzleTransform.Position, Direction = cameraDirection, 
-                    Created = false, FlySpeed = 10.0f, LifeTime = 10.0f});
+                    Created = false, FlySpeed = spell.FlySpeed, LifeTime = spell.LifeTime});
             }
             
             _ecb.Playback(state.EntityManager);
-            _ecb.Dispose();
+            _ecb.Dispose();            
         }
     }
 }

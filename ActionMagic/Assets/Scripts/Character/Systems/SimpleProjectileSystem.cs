@@ -5,11 +5,14 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Transforms;
 using Unity.Physics;
+using Unity.Physics.Systems;
 
 using Character.Components;
 
 namespace Character.Systems
 {
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct SimpleProjectileSystem : ISystem
     {        
 
