@@ -21,6 +21,7 @@ namespace Elements.Systems
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<BaseElementComponent>();
+            state.RequireForUpdate<WeightComponent>();
         }
 
         [BurstCompile]

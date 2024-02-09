@@ -32,7 +32,8 @@ namespace Elements.Systems
             var _ecb = new EntityCommandBuffer(Allocator.TempJob);
             var job = new AddDestroyComponentJob
             {
-                ECB = _ecb
+                ECB = _ecb,
+                DestroyData = SystemAPI.GetComponentLookup<ShouldBeDestroyedComponent>()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -41,22 +42,34 @@ namespace Elements.Systems
             _ecb.Dispose();
         }
 
-        [WithNone(typeof(ShouldBeDestroyedComponent))]
+        //[WithNone(typeof(ShouldBeDestroyedComponent))]
         [BurstCompile]
         public partial struct AddDestroyComponentJob : IJobEntity
         {          
             public EntityCommandBuffer ECB;
+            public ComponentLookup<ShouldBeDestroyedComponent> DestroyData;
             public BufferLookup<ElementConnection> connections;
 
             void Execute(Entity entity, ref WeightComponent weight)
             {
+                float timeToDestroy = 0.5f;
+
                 if (weight.WeightValue <= 0)
                 {
-                    float timeToDestroy = 0.5f;
-                    ECB.AddComponent(entity, new ShouldBeDestroyedComponent {MainEntity = entity, Should = true, timerToDestroy = timeToDestroy});
-                    ECB.AddComponent(entity, new TimerComponent { timer = timeToDestroy });                    
+                    if (DestroyData.TryGetComponent(entity, out var shouldBeDestroyedComponent))
+                    {
+                        if (shouldBeDestroyedComponent.timerToDestroy > timeToDestroy)
+                        {
+                            ECB.SetComponent(entity, new TimerComponent { timer = timeToDestroy });
+                        }
+                    }
+                    else
+                    {
+                        ECB.AddComponent(entity, new ShouldBeDestroyedComponent { MainEntity = entity, Should = true, timerToDestroy = timeToDestroy });
+                        ECB.AddComponent(entity, new TimerComponent { timer = timeToDestroy });
+                    }
                 }
-            }            
+            }          
         }
     }
 }
