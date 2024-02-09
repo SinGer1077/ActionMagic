@@ -1674,7 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcdb3ceca03cd28458a5bd50cf766db7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mouseSensivity: 0.25
+  _mouseSensivity: 5
   _angleBorders: {x: -50, y: 50}
 --- !u!1 &1642578175
 GameObject:

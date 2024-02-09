@@ -23,7 +23,8 @@ namespace Character.Systems
         {            
             var job = new RotationCharacterJob
             {
-                MouseDelta = Input.mousePosition                
+                //MouseDelta = Input.mousePosition
+                MouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"))
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -36,7 +37,7 @@ namespace Character.Systems
 
             void Execute(Entity entity, ref CharacterVerticalRotationComponent rotation, ref LocalTransform transform)
             {
-                rotation.Pitch = math.clamp(-MouseDelta.y * rotation.MouseSensivity, rotation.AngleBorders.x, rotation.AngleBorders.y);
+                rotation.Pitch = math.clamp(rotation.Pitch - MouseDelta.y * rotation.MouseSensivity, rotation.AngleBorders.x, rotation.AngleBorders.y);
                 transform.Rotation = Quaternion.Euler(rotation.Pitch, 0.0f, 0.0f);                                              
             }
         }
