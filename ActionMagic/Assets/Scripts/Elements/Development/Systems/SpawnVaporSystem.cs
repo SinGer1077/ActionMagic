@@ -8,6 +8,8 @@ using Unity.Physics.Systems;
 using Elements.Data;
 using Elements.Components;
 
+using Universal.Components;
+
 namespace Elements.Systems
 {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
@@ -32,7 +34,8 @@ namespace Elements.Systems
                 Config = SystemAPI.GetSingleton<VaporConfigComponent>(),
                 ConnectionsData = SystemAPI.GetBufferLookup<ElementConnection>(),
                 TransformData = SystemAPI.GetComponentLookup<LocalTransform>(),
-                ScaleData = SystemAPI.GetComponentLookup<PostTransformMatrix>()
+                ScaleData = SystemAPI.GetComponentLookup<PostTransformMatrix>(),
+                WeightData = SystemAPI.GetComponentLookup<WeightComponent>()
             };
             var handle = job.Schedule(state.Dependency);
             handle.Complete();
@@ -49,6 +52,7 @@ namespace Elements.Systems
             public BufferLookup<ElementConnection> ConnectionsData;
             public ComponentLookup<LocalTransform> TransformData;
             public ComponentLookup<PostTransformMatrix> ScaleData;
+            public ComponentLookup<WeightComponent> WeightData;
 
             void Execute(Entity entity, ref BaseElementComponent element)
             {
@@ -59,10 +63,19 @@ namespace Elements.Systems
                     {                        
                         if (connections[i].ConnectedElement.Type == ElementTypes.Fire && !connections[i].IsReacted)
                         {
+                            Entity smallerEntity = entity;
+                            if (WeightData[entity].Infinity == false)
+                            {
+                                if (WeightData[connections[i].ConnectedElement.id].WeightValue > WeightData[entity].WeightValue)
+                                {
+                                    smallerEntity = connections[i].ConnectedElement.id;
+                                }
+                            }
+
                             var vaporEntity = ECB.Instantiate(Config.VaporPrefab);
 
                             float scaleValue = 1;
-                            if (ScaleData.TryGetComponent(entity, out var scale))
+                            if (ScaleData.TryGetComponent(smallerEntity, out var scale))
                                 scaleValue = scale.Value.c0.x * scale.Value.c2.z;
 
                             ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity} );

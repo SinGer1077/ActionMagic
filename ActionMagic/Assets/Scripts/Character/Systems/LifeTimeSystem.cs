@@ -46,7 +46,6 @@ namespace Character.Systems
             void Execute(Entity entity, ref SimpleProjectileComponent projectile)
             {
                 projectile.LifeTime -= 0.03f;
-
                 if (projectile.LifeTime <= 0)
                 {
                     ECB.DestroyEntity(entity);

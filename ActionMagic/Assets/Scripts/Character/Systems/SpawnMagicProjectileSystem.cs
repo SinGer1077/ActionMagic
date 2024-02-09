@@ -72,7 +72,8 @@ namespace Character.Systems {
 
                 float3 screenDirection = Camera.main.ScreenPointToRay(new Vector2(Screen.height / 2, Screen.width / 2)).direction;
                 float3 cameraDirection = characterTransform.Forward;
-                
+
+                _ecb.AddComponent(projectile, new LocalTransform { Position = muzzleTransform.Position, Rotation = Quaternion.identity, Scale = 1.0f });
                 _ecb.AddComponent(projectile, new WeightComponent { WeightValue = spell.ElementWeight, InitWeightValue = spell.ElementWeight, Infinity = false});                
 
                 _ecb.AddComponent(projectile, new SimpleProjectileComponent

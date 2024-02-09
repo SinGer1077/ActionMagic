@@ -28,7 +28,7 @@ namespace Character.Authoring
                         SpellPrefab = GetEntity(authoring._spells[i].Spell, TransformUsageFlags.None),
                         FlySpeed = authoring._spells[i].FlySpeed,
                         ElementWeight = authoring._spells[i].Weight,
-                        LifeTime = authoring._spells[i].Weight
+                        LifeTime = authoring._spells[i].LifeTime
                     });
                 }
             }
