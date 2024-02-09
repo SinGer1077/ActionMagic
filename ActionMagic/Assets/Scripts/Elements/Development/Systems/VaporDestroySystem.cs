@@ -16,13 +16,11 @@ namespace Elements.Systems
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct VaporDestroySystem : ISystem
     {
-        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<VaporComponent>();
         }
 
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             //var ecbSystem = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
@@ -62,7 +60,6 @@ namespace Elements.Systems
         }
 
         [WithNone(typeof(ShouldBeDestroyedComponent))]
-        [BurstCompile]
         public partial struct DestroyVaporJob : IJobEntity
         {
             public EntityCommandBuffer ECB;
@@ -74,7 +71,6 @@ namespace Elements.Systems
             {               
                 if (!EntityData.Exists(vapor.WaterElementEntity))
                 {
-                    Debug.Log("Here");
                     AddDestroy(ECB, entity);
                     return;
                 }                

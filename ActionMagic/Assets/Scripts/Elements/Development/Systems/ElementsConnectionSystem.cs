@@ -21,13 +21,12 @@ namespace Elements.Systems
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct ElementsConnectionSystem : ISystem
     {
-        private static EntityManager _manager;
+        private EntityManager _manager;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<BaseElementComponent>();
-            _manager = state.EntityManager;
+            state.RequireForUpdate<BaseElementComponent>();            
         }
 
 
@@ -55,7 +54,6 @@ namespace Elements.Systems
             triggerHandle.Complete();
         }
 
-        [BurstCompile]
         public static void ConnectElements(EntityManager manager, Entity first, Entity second)
         {
             BaseElementComponent firstElement = manager.GetComponentData<BaseElementComponent>(first);
@@ -63,7 +61,6 @@ namespace Elements.Systems
             ConnectElements(manager, first, second, firstElement, secondElement);
         }
 
-        [BurstCompile]
         public static void ConnectElements(EntityManager manager, Entity first, Entity second, BaseElementComponent firstElement, BaseElementComponent secondElement)
         {         
             DynamicBuffer<ElementConnection> connectionsFirst = manager.GetBuffer<ElementConnection>(first);
@@ -90,13 +87,13 @@ namespace Elements.Systems
             manager.SetComponentData(second, new WeightComponent() { WeightValue = resultMass2 });
         }             
 
-        [BurstCompile]
         private static float ChangeWeight(WeightComponent firstWeight, WeightComponent secondWeight, ElementTypes firstType, ElementTypes secondType)
         {
             float resultMass1 = firstWeight.WeightValue;
             if (firstWeight.Infinity == false && firstType != secondType)
             {
-                float priority = ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType];
+                //float priority = ElementProrityTable.ElementPriorities[(int)secondType, (int)firstType];
+                float priority = ElementProrityTable.GetElementPriority((int)secondType, (int)firstType);
                 resultMass1 = Mathf.Clamp(firstWeight.WeightValue - secondWeight.WeightValue
                     * priority, 0, Mathf.Infinity) 
                     * (1 - Convert.ToInt32(secondWeight.Infinity) + Convert.ToInt32(priority == 0));
@@ -182,7 +179,6 @@ namespace Elements.Systems
             {               
                 Entity entityA = triggerEvent.EntityA;
                 Entity entityB = triggerEvent.EntityB;
-                Debug.Log(entityA);
                 float3 contactPoint = TransformComponentData[entityA].Position;
                 ConnectElements(BaseElementData, WeightComponentData, ConnectionsData, entityA, entityB, contactPoint);
             }

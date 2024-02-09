@@ -20,9 +20,9 @@ namespace Elements.Systems
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct PhysicsElementsSpawnerSystem : ISystem
     {
-        private static EntityCommandBuffer _ecb;
-        private static EntityManager _em;
-        private static PhysicsElementsSpawnerComponent _spawner;
+        private EntityCommandBuffer _ecb;
+        private EntityManager _em;
+        private PhysicsElementsSpawnerComponent _spawner;
 
         private static int _currentType;
         private static int _currentWeight;
@@ -33,20 +33,21 @@ namespace Elements.Systems
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<PhysicsElementsSpawnerComponent>();
-            _ecb = new EntityCommandBuffer(Allocator.Persistent);
-            _em = state.EntityManager;
+        
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            //state.Enabled = false;
+            //_em = state.EntityManager;
             _ecb = new EntityCommandBuffer(Allocator.TempJob);
-            _spawner = SystemAPI.GetSingleton<PhysicsElementsSpawnerComponent>();
+            //_spawner = SystemAPI.GetSingleton<PhysicsElementsSpawnerComponent>();
 
             var flyingJob = new DynamicFlyingSpawnerJob
             {
-                ECB = _ecb                
+                ECB = _ecb,
+                manager = state.EntityManager,
+                Spawner = SystemAPI.GetSingleton<PhysicsElementsSpawnerComponent>()
             };
             var flyHandle = flyingJob.Schedule(state.Dependency);
             flyHandle.Complete();                
@@ -57,11 +58,11 @@ namespace Elements.Systems
             _ecb.Dispose();
         }
 
-        [BurstCompile]
         public partial struct DynamicFlyingSpawnerJob : IJobEntity
         {
             public EntityCommandBuffer ECB;
-            //public EntityStorageInfoLookup EntityData;
+            public EntityManager manager;
+            public PhysicsElementsSpawnerComponent Spawner;
 
             void Execute(Entity entity, ref PhysicsElementsSpawnerComponent spawner)
             {               
@@ -82,7 +83,7 @@ namespace Elements.Systems
                 _currentWeight += 1;
                 if (_currentWeight >= 20) _currentWeight = 0;
 
-                Entity prefab = CreatePhysicsElement(_currentType, ECB);
+                Entity prefab = CreatePhysicsElement(_currentType, ECB, manager, spawner);
                 ECB.AddComponent(prefab, new LocalTransform
                 {
                     Position = new float3(_currentXPos, spawner.SpawnPoint.y, spawner.SpawnPoint.z),
@@ -102,10 +103,10 @@ namespace Elements.Systems
             }
         }
 
-        public static Entity CreatePhysicsElement(int elementType, EntityCommandBuffer ecb)
+        public static Entity CreatePhysicsElement(int elementType, EntityCommandBuffer ecb, EntityManager em, PhysicsElementsSpawnerComponent spawner)
         {
-            var prefabs = _em.GetBuffer<ElementPrefab>(_spawner.Spawner);
-            var elementsArray = _em.GetBuffer<ElementBuffer>(_spawner.Spawner);
+            var prefabs = em.GetBuffer<ElementPrefab>(spawner.Spawner);
+            var elementsArray = em.GetBuffer<ElementBuffer>(spawner.Spawner);
 
             var entity = ecb.Instantiate(prefabs[(int)elementsArray[elementType].type].Prefab);          
 

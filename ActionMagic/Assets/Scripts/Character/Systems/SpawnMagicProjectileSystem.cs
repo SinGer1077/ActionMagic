@@ -70,7 +70,7 @@ namespace Character.Systems {
                 var characterTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.CameraTarget);
                 var muzzleTransform = state.EntityManager.GetComponentData<LocalToWorld>(controller.SpawnAttackPosition);
 
-                float3 screenDirection = Camera.main.ScreenPointToRay(new Vector2(Screen.height / 2, Screen.width / 2)).direction;
+                //float3 screenDirection = Camera.main.ScreenPointToRay(new Vector2(Screen.height / 2, Screen.width / 2)).direction;
                 float3 cameraDirection = characterTransform.Forward;
 
                 _ecb.AddComponent(projectile, new LocalTransform { Position = muzzleTransform.Position, Rotation = Quaternion.identity, Scale = 1.0f });

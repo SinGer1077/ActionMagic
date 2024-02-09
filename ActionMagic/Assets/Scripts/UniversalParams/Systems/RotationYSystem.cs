@@ -12,7 +12,7 @@ namespace Universal.Systems
 
     public partial struct RotationYSystem : ISystem
     {
-        public static JobHandle rotationHandler;
+        //public static JobHandle rotationHandler;
 
         [BurstCompile]
         public void OnCreate(ref SystemState state)

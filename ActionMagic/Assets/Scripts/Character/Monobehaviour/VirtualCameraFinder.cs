@@ -37,6 +37,16 @@ namespace Character.Monobehaviour
                 _target.position = characterTransform.Position;
                 _target.rotation = characterTransform.Rotation;
             }
+            else
+            {
+                var characterQuery = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntityQuery(typeof(CharacterControllerComponent));
+                NativeArray<Entity> entityNativeArray = characterQuery.ToEntityArray(Allocator.Temp);
+                if (entityNativeArray.Length > 0)
+                {
+                    _character = entityNativeArray[0];
+                    _isNotNull = true;
+                }
+            }
         }
     }
 }

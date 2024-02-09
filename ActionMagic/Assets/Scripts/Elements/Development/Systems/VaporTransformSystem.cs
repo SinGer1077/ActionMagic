@@ -16,13 +16,11 @@ namespace Elements.Systems
     [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial struct VaporTransformSystem : ISystem
     {
-        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<VaporComponent>();
         }
 
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             var job = new TransformVaporJob
@@ -56,7 +54,6 @@ namespace Elements.Systems
             }
         }
         
-        [BurstCompile]
         public partial struct TransformVaporJob : IJobEntity
         {                  
             void Execute(Entity entity, ref VaporComponent vapor, ref LocalTransform transform)
