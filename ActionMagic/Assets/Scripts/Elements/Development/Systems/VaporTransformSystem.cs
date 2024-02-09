@@ -38,7 +38,20 @@ namespace Elements.Systems
                 {
                     var vaporPrefab = state.EntityManager.GetComponentData<VaporComponent>(parent.Value);
                     var shape = particleSystem.Value.shape;
-                    shape.radius= vaporPrefab.Radius;
+                    var main = particleSystem.Value.main;
+
+                    shape.radius = vaporPrefab.Radius;
+                    
+                    if (vaporPrefab.Radius < 1.0)
+                    {
+                        main.startSize = vaporPrefab.Radius * 2.0f;
+                        main.startSpeed = vaporPrefab.Radius * 2.0f;
+                    }
+                    else
+                    {
+                        main.startSize = vaporPrefab.Radius;
+                        main.startSpeed = vaporPrefab.Radius;
+                    }
                 }
             }
         }

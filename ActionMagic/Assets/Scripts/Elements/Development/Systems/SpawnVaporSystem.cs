@@ -2,6 +2,7 @@ using UnityEngine;
 
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Physics.Systems;
 
@@ -60,25 +61,23 @@ namespace Elements.Systems
                 {
                     var connections = ConnectionsData[entity];
                     for (int i = 0; i < connections.Length; i++)
-                    {                        
+                    {
                         if (connections[i].ConnectedElement.Type == ElementTypes.Fire && !connections[i].IsReacted)
                         {
                             Entity smallerEntity = entity;
-                            if (WeightData[entity].Infinity == false)
+
+                            if (WeightData[connections[i].ConnectedElement.id].WeightValue <= WeightData[entity].WeightValue)
                             {
-                                if (WeightData[connections[i].ConnectedElement.id].WeightValue > WeightData[entity].WeightValue)
-                                {
-                                    smallerEntity = connections[i].ConnectedElement.id;
-                                }
+                                smallerEntity = connections[i].ConnectedElement.id;
                             }
 
                             var vaporEntity = ECB.Instantiate(Config.VaporPrefab);
 
                             float scaleValue = 1;
                             if (ScaleData.TryGetComponent(smallerEntity, out var scale))
-                                scaleValue = scale.Value.c0.x * scale.Value.c2.z;
+                                scaleValue = math.max(scale.Value.c0.x, scale.Value.c2.z) / 2.0f;
 
-                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity} );
+                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity });
 
                             connections[i] = new ElementConnection(connections[i], true);
                         }
