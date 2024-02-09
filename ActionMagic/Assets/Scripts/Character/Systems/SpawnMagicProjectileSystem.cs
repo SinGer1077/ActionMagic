@@ -74,7 +74,8 @@ namespace Character.Systems {
                 float3 cameraDirection = characterTransform.Forward;
 
                 _ecb.AddComponent(projectile, new LocalTransform { Position = muzzleTransform.Position, Rotation = Quaternion.identity, Scale = 1.0f });
-                _ecb.AddComponent(projectile, new WeightComponent { WeightValue = spell.ElementWeight, InitWeightValue = spell.ElementWeight, Infinity = false});                
+                _ecb.AddComponent(projectile, new WeightComponent { WeightValue = spell.ElementWeight, InitWeightValue = spell.ElementWeight,
+                    Infinity = false, InitScale = 1.0f});                
 
                 _ecb.AddComponent(projectile, new SimpleProjectileComponent
                     { Position = muzzleTransform.Position, Direction = cameraDirection, 

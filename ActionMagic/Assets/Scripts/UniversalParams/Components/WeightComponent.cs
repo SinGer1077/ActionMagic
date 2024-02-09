@@ -8,6 +8,7 @@ namespace Universal.Components
         public bool Infinity;
 
         public float InitWeightValue;
+        public float InitScale;
         public float LerpTimer;
     }
 }

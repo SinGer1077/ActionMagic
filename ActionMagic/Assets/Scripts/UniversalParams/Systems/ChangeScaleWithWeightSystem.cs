@@ -30,9 +30,9 @@ namespace Universal.System
             void Execute(Entity entity, ref WeightComponent weight, ref LocalTransform transform)
             {
                 if (weight.WeightValue != weight.InitWeightValue)
-                {
+                {                    
                     float percentage = weight.WeightValue / weight.InitWeightValue;
-                    transform.Scale = Mathf.Lerp(1.0f, percentage, weight.LerpTimer / 0.5f);
+                    transform.Scale = Mathf.Lerp(weight.InitScale, weight.InitScale * percentage, weight.LerpTimer / 0.5f);                    
                     weight.LerpTimer += 0.03f;
                 }
             }

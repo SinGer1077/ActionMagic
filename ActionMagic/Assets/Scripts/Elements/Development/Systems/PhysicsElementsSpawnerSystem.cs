@@ -90,7 +90,8 @@ namespace Elements.Systems
                     Scale = _currentWeight * 0.1f
                 });
 
-                ECB.AddComponent(prefab, new WeightComponent { WeightValue = _currentWeight, InitWeightValue = _currentWeight, Infinity = false });
+                ECB.AddComponent(prefab, new WeightComponent { WeightValue = _currentWeight, InitWeightValue = _currentWeight,
+                    Infinity = false, InitScale = _currentWeight * 0.1f });
 
                 if (_currentXPos >= 20) _currentXPos = -20;
                 else _currentXPos++;
