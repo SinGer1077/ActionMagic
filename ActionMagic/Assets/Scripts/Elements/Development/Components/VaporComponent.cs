@@ -10,5 +10,6 @@ namespace Elements.Components
         public float Radius;
         public float3 Position;
         public Entity WaterElementEntity;
+        public Entity FireElementEntity;
     }
 }

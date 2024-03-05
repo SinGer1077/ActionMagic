@@ -78,7 +78,7 @@ namespace Elements.Systems
                             if (ScaleData.TryGetComponent(smallerEntity, out var scale))
                                 scaleValue = math.max(scale.Value.c0.x, scale.Value.c2.z) / 2.0f;
 
-                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity });
+                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity, FireElementEntity = connections[i].ConnectedElement.id });
 
                             connections[i] = new ElementConnection(connections[i], true);
                         }

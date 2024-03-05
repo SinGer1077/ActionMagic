@@ -69,7 +69,7 @@ namespace Elements.Systems
 
             void Execute(Entity entity, ref VaporComponent vapor)
             {               
-                if (!EntityData.Exists(vapor.WaterElementEntity))
+                if (!EntityData.Exists(vapor.WaterElementEntity) || !EntityData.Exists(vapor.FireElementEntity))
                 {
                     AddDestroy(ECB, entity);
                     return;
