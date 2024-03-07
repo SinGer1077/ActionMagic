@@ -11,6 +11,7 @@ using Unity.Entities.CodeGen;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Physics;
+using Unity.Physics.Systems;
 using Unity.Jobs;
 
 using Elements.Components;
@@ -255,7 +256,7 @@ public class ElementsTest : ECSTestsFixture
     public void When_WaterElementAndFireElementConnects_Than_VaporReactionShouldBeCreated()
     {
         var first = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Water, 10.0f);
-        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);
+        var second = ElementsSpawnerSystem.CreateElementEntity(m_Manager, ElementTypes.Fire, 40.0f);        
 
         ElementsConnectionSystem.ConnectElements(m_Manager, first, second);
     }  

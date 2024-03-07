@@ -3,6 +3,14 @@ namespace Elements.Data
     public enum ElementTypes
     {
         Water,
-        Fire
+        Fire,
+        Earth,
+        Wind,
+        Ice,
+        Electric,
+        Sand,
+        Nature,
+        Lava,
+        Metal
     }
 }

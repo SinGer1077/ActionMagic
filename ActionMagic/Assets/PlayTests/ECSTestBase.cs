@@ -39,17 +39,4 @@ public class ECSTestBase
         return ent;
     }
 
-    //public EntityQuery GetEntityQuery<T>(ComponentType component) where T : IComponentData
-    //{
-    //    var allEntities = EntityManager.GetAllEntities(Allocator.Persistent);
-    //    EntityQuery query = new EntityQuery();
-    //    NativeList<typeof(T)> list = new NativeList<typeof(T)>(100);
-    //    foreach (var entity in allEntities)
-    //    {
-    //        if (EntityManager.HasComponent(entity, component))
-    //        {
-    //            query.
-    //        }
-    //    }
-    //}
 }

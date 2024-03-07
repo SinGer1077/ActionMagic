@@ -58,12 +58,12 @@ namespace Elements.Systems
 
             void Execute(Entity entity, ref BaseElementComponent element)
             {
-                if (element.Type == ElementTypes.Water)
+                if (element.Type == ElementTypes.Fire)
                 {
                     var connections = ConnectionsData[entity];
                     for (int i = 0; i < connections.Length; i++)
                     {
-                        if (connections[i].ConnectedElement.Type == ElementTypes.Fire && !connections[i].IsReacted)
+                        if ( (connections[i].ConnectedElement.Type == ElementTypes.Water || connections[i].ConnectedElement.Type == ElementTypes.Ice) && !connections[i].IsReacted)
                         {
                             Entity smallerEntity = entity;
 
@@ -78,7 +78,7 @@ namespace Elements.Systems
                             if (ScaleData.TryGetComponent(smallerEntity, out var scale))
                                 scaleValue = math.max(scale.Value.c0.x, scale.Value.c2.z) / 2.0f;
 
-                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = entity, FireElementEntity = connections[i].ConnectedElement.id });
+                            ECB.AddComponent(vaporEntity, new VaporComponent { Position = connections[i].ConnectionPosition, Radius = scaleValue, WaterElementEntity = connections[i].ConnectedElement.id, FireElementEntity = entity });
 
                             connections[i] = new ElementConnection(connections[i], true);
                         }
